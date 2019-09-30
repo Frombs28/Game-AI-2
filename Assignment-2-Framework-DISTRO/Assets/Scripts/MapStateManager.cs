@@ -146,6 +146,7 @@ public class MapStateManager : MonoBehaviour {
                 case 7:
                     EnterMapStateSeven();
                     break;
+
         }
     }
 

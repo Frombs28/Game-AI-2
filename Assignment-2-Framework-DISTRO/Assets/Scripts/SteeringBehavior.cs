@@ -76,6 +76,15 @@ public class SteeringBehavior : MonoBehaviour
     {
         return new DynamicArrive(agent.k, target.k, maxAcceleration, maxSpeed, targetRadiusL, slowRadiusL).getSteering();
     }
+
+    public SteeringOutput PursueArrive() {
+        float dis = (agent.k.position - target.k.position).magnitude;
+        if(dis <= slowRadiusL) {
+            return Arrive();
+        }
+
+        return Pursue();
+    }
     public SteeringOutput Evade()
     {
         return new DynamicEvade(agent.k, target.k, maxAcceleration, maxPrediction).getSteering();

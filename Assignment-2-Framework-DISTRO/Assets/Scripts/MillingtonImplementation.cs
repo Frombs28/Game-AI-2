@@ -190,8 +190,8 @@ public class DynamicArrive {
         if (distance < targetRadius)
         {
             Debug.Log("INSIDE!!!");
-            //steering.linear = -character.velocity;
-            steering.linear = Vector3.zero;
+            steering.linear = -character.velocity;
+            //steering.linear = Vector3.zero;
             steering.angular = 0;
             return steering;
         }
@@ -480,7 +480,15 @@ class ObstacleAvoidance{
         rayVector.Normalize();
         rayVector *= lookahead;
 
-        return new SteeringOutput();
+
+        // Does the ray intersect any objects excluding the player layer
+        if(!Physics.Raycast(s.character.position, rayVector, out collisionDetector)) {
+            return s.getSteering();
+        }
+
+        s.target.position = collisionDetector.point + collisionDetector.normal * avoidDistance;
+
+        return s.getSteering();
 
     }
 
