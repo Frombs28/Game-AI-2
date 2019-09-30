@@ -72,8 +72,6 @@ public class NPCController : MonoBehaviour
             case 0:
                 if (label)
                 {
-                    // replace "First algorithm" with the name of the actual algorithm you're demoing
-                    // do this for each phase
                     label.text = name.Replace("(Clone)", "") + "\nAt Rest";
                 }
                 linear = Vector3.zero;
@@ -84,63 +82,37 @@ public class NPCController : MonoBehaviour
                 //dynamic seek
                 if (label)
                 {
-                    // replace "First algorithm" with the name of the actual algorithm you're demoing
-                    // do this for each phase
                     label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Dynamic Seek";
                 }
                 stopped = false;
-
-                //dynamic seek
-
-
                 ai.SetTarget(target);
                 linear = ai.Seek().linear;
                 angular = ai.Face().angular;
                 DrawLine(gameObject.transform.position, target.gameObject.transform.position);
-
-
-                //linear = ai.Seek();
-                //angular = ai.Face(rotation,linear);
-                //Debug.Log(angular);
                 break;
 
             case 2:
-                //dynamic flee
                 if (label)
                 {
                     label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Dynamic Flee";
                 }
                 stopped = false;
                 ai.SetTarget(target);
-                //linear = ai.Flee();
-                //angular = ai.Face(orientation, linear);
-                //this is the new velocity that is added, which 
-                //pass in the current velocity, and it will return a new velocity based on that
-                //Debug.Log(velocity);
-
                 linear = ai.Flee().linear;
                 angular = ai.Face().angular;
                 DrawLine(gameObject.transform.position, target.gameObject.transform.position);
                 break;
 
             case 3:
-                //
                 if (label)
                 {
                     label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Pursue with Arrive";
                 }
                 stopped = false;
-                //persue with arrive
                 ai.SetTarget(target);
-                //velocity = ai.PursueArrive();
-
                 linear = ai.Pursue().linear;
                 angular = ai.Face().angular;
-                DrawCircle(target.transform.position, ai.targetRadiusL);
-
-
-                // linear = ai.whatever();  -- replace with the desired calls
-                // angular = ai.whatever();
+                
                 break;
 
             case 4:
@@ -150,8 +122,6 @@ public class NPCController : MonoBehaviour
                 }
                 stopped = false;
                 ai.SetTarget(target);
-                //velocity = ai.PursueArrive();
-
                 linear = ai.Evade().linear;
                 angular = ai.Face().angular;
                 break;
@@ -162,9 +132,6 @@ public class NPCController : MonoBehaviour
                 }
                 stopped = false;
                 ai.SetTarget(target);
-                // linear = ai.whatever();  -- replace with the desired calls
-                // angular = ai.whatever();
-
                 linear = ai.Seek().linear;
                 angular = ai.Face().angular;
 
@@ -177,8 +144,6 @@ public class NPCController : MonoBehaviour
                 }
                 stopped = false;
                 ai.SetTarget(target);
-                // linear = ai.whatever();  -- replace with the desired calls
-                // angular = ai.whatever();
                 linear = ai.Seek().linear;
                 angular = ai.Face().angular;
 
@@ -189,8 +154,6 @@ public class NPCController : MonoBehaviour
                     label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Dynamic Wander";
                 }
                 stopped = false;
-                //rotation = ai.Face(rotation, linear);
-                //ai.SetTarget(target);
                 linear = ai.Wander().linear;
                 angular = ai.Wander().angular;
                 break;
