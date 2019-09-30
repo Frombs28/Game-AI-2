@@ -43,8 +43,8 @@ public class MapStateManager : MonoBehaviour {
     private List<GameObject> spawnedNPCs;   // When you need to iterate over a number of agents.
     private List<GameObject> trees;
 
-    private int currentPhase = 0;           // This stores where in the "phases" the game is.
-    private int previousPhase = 0;          // The "phases" we were just in
+    private int currentPhase = -1;           // This stores where in the "phases" the game is.
+    private int previousPhase = -1;          // The "phases" we were just in
 
     //public int Phase => currentPhase;
 
@@ -56,7 +56,7 @@ public class MapStateManager : MonoBehaviour {
     // spawnedNPCs list. You can always add/remove NPCs later on.
 
     void Start() {
-        narrator.text = "This is the place to mention major things going on during the demo, the \"narration.\"";
+        narrator.text = "Here we see the Hunter, resting outdoors.";
 
         TreeCount = 100;    // TreeCount isn't showing up in Inspector
 
@@ -64,10 +64,8 @@ public class MapStateManager : MonoBehaviour {
         SpawnTrees(TreeCount);
 
         spawnedNPCs = new List<GameObject>();
-        spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 4));
-        
-        Invoke("SpawnWolf", 12);
-        Invoke("Meeting1", 30);
+        spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 0));
+        Invoke("NextPhase", 3.0f);
     }
 
     /// <summary>
@@ -127,118 +125,133 @@ public class MapStateManager : MonoBehaviour {
                break;
        }
        **************/
-
+        previousPhase = currentPhase;
         switch (currentPhase)
             {
                 case 0:
-                    if (spawnedNPCs.Count > 1 && Vector3.Distance(spawnedNPCs[1].transform.position, spawnedNPCs[0].transform.position) < 12)
-                    {
-                        narrator.text = "The Hunter spots the wolf and believes it is his target. The Wolf runs.";
-                        spawnedNPCs[0].GetComponent<SteeringBehavior>().target = spawnedNPCs[1].GetComponent<NPCController>();
-                        spawnedNPCs[1].GetComponent<SteeringBehavior>().target = spawnedNPCs[0].GetComponent<NPCController>();
-                        spawnedNPCs[0].GetComponent<NPCController>().phase = 1;
-                        spawnedNPCs[1].GetComponent<NPCController>().phase = 2;
-                        currentPhase++;
-                    }
+                    EnterMapStateZero();
                     break;
                 case 1:
-                    if (Vector3.Distance(spawnedNPCs[1].transform.position, spawnedNPCs[0].transform.position) < 2)
-                    {
-                        narrator.text = "Both the Hunter and Wolf move to another area. Little Red arrives and moves to her house.";
-                        spawnedNPCs[0].GetComponent<NPCController>().label.enabled = false;
-                        spawnedNPCs[0].GetComponent<NPCController>().DestroyPoints();
-                        spawnedNPCs[0].SetActive(false);
-                        spawnedNPCs[1].GetComponent<NPCController>().label.enabled = false;
-                        spawnedNPCs[1].GetComponent<NPCController>().DestroyPoints();
-                        spawnedNPCs[1].SetActive(false);
-                        spawnedNPCs.Add(SpawnItem(spawner3, RedPrefab, null, SpawnText3, 5));
-                        CreatePath();
-                        Invoke("SpawnWolf2", 10);
-                        currentPhase++;
-                    }
+                    EnterMapStateOne();
                     break;
                 case 2:
-                    if (spawnedNPCs.Count > 3 && Vector3.Distance(spawnedNPCs[2].transform.position, spawnedNPCs[3].transform.position) < 12)
-                    {
-                        narrator.text = "Little Red notices the Wolf and moves toward it.";
-                        spawnedNPCs[2].GetComponent<SteeringBehavior>().target = spawnedNPCs[3].GetComponent<NPCController>();
-                        SetArrive(spawnedNPCs[2]);
-                        SetArrive(spawnedNPCs[3]);
-                        Invoke("Meeting2", 7);
-                        currentPhase++;
-                    }
+                    EnterMapStateTwo();
                     break;
                 case 3:
-                    if (Vector3.Distance(spawnedNPCs[2].transform.position, house.transform.position) < 12)
-                    {
-                        spawnedNPCs[2].GetComponent<SteeringBehavior>().target = house;
-                        SetArrive(spawnedNPCs[2]);
-                    }
-                    if (Vector3.Distance(spawnedNPCs[2].transform.position, house.transform.position) < 2)
-                    {
-                        spawnedNPCs[2].GetComponent<NPCController>().DestroyPoints();
-                        spawnedNPCs[2].GetComponent<NPCController>().label.enabled = false;
-                        spawnedNPCs[2].SetActive(false);
-                    }
-                    if (Vector3.Distance(spawnedNPCs[3].transform.position, house.transform.position) < 12)
-                    {
-                        SetArrive(spawnedNPCs[3]);
-                    }
-                    if (Vector3.Distance(spawnedNPCs[3].transform.position, house.transform.position) < 2)
-                    {
-                        spawnedNPCs[3].GetComponent<NPCController>().DestroyPoints();
-                        spawnedNPCs[3].GetComponent<NPCController>().label.enabled = false;
-                        spawnedNPCs[3].SetActive(false);
-                    }
-                    if (spawnedNPCs.Count > 4 && Vector3.Distance(spawnedNPCs[4].transform.position, house.transform.position) < 12)
-                    {
-                        SetArrive(spawnedNPCs[4]);
-                    }
-                    if (spawnedNPCs.Count > 4 && Vector3.Distance(spawnedNPCs[4].transform.position, house.transform.position) < 2)
-                    {
-                        spawnedNPCs[4].GetComponent<NPCController>().DestroyPoints();
-                        spawnedNPCs[4].GetComponent<NPCController>().label.enabled = false;
-                        spawnedNPCs[4].SetActive(false);
-                        Invoke("End", 5);
-                    }
+                    EnterMapStateThree();
                     break;
-            }
+                case 4:
+                    EnterMapStateFour();
+                    break;
+                case 5:
+                    EnterMapStateFive();
+                    break;
+                case 6:
+                    EnterMapStateSix();
+                    break;
+                case 3:
+                    EnterMapStateSeven();
+                    break;
+        }
     }
 
+    void NextPhase()
+    {
+        // First delete all NPCs
+        for (int i = spawnedNPCs.Count - 1; i >= 0; i--)
+        {
+            GameObject character = spawnedNPCs[i];
+            character.GetComponent<NPCController>().label.enabled = false;
+            character.GetComponent<NPCController>().DestroyPoints();
+            character.SetActive(false);
+            Debug.Log("Deleted");
+        }
+        if (currentPhase < 7)
+        {
+            currentPhase++;
+        }
+        else
+        {
+            currentPhase = 0;
+        }
+    }
 
     private void EnterMapStateZero()
     {
-        narrator.text = "In Phase Zero, we're going to ...";
-
-        //currentPhase = 2; // or whatever. Won't necessarily advance the phase every time
-
-        //spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 4));
+        narrator.text = "The Wolf appears. Most wolves are ferocious, but this one is docile.";
+        spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 0));
+        spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 7));
+        Invoke("NextPhase", 3);
     }
 
-    private void EnterMapStateOne() {
-        narrator.text = "In Phase One, we're going to ...";
-
-        //currentPhase = 2; // or whatever. Won't necessarily advance the phase every time
-
-        //spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 4));
+    private void EnterMapStateOne()
+    {
+        narrator.text = "The Hunter spots the wolf and believes it is his target. The Wolf runs.";
+        spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 0));
+        spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 0));
+        spawnedNPCs[0].GetComponent<SteeringBehavior>().target = spawnedNPCs[1].GetComponent<NPCController>();
+        spawnedNPCs[1].GetComponent<SteeringBehavior>().target = spawnedNPCs[0].GetComponent<NPCController>();
+        spawnedNPCs[0].GetComponent<NPCController>().mapState = 3;
+        spawnedNPCs[1].GetComponent<NPCController>().mapState = 4;
+        Invoke("NextPhase", 5);
     }
 
     private void EnterMapStateTwo()
     {
-        narrator.text = "Entering Phase Two";
-
-        currentPhase = 3; // or whatever. Won't necessarily advance the phase every time
-
-        //spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 4));
+        narrator.text = "Both the Hunter and Wolf move to another area. Little Red arrives and moves to her house.";
+        spawnedNPCs.Add(SpawnItem(spawner3, RedPrefab, null, SpawnText3, 0));
+        spawnedNPCs[0].GetComponent<SteeringBehavior>().target = house; // should be house; this might not work yet $
+        CreatePath();
+        Invoke("NextPhase", 5);
     }
 
-    private void EnterMapStateThree()
+    private void EnterMapStateThree() {
+        narrator.text = "Little Red notices the Wolf and moves toward it.";
+        spawnedNPCs.Add(SpawnItem(spawner3, RedPrefab, null, SpawnText3, 0));
+        spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 0));
+        spawnedNPCs[0].GetComponent<SteeringBehavior>().target = spawnedNPCs[1].GetComponent<NPCController>();
+        spawnedNPCs[0].GetComponent<NPCController>().mapState = 3;
+        Invoke("NextPhase", 5);
+    }
+
+    private void EnterMapStateFour()
     {
-        narrator.text = "Entering Phase Three";
+        narrator.text = "The Wolf looks for shelter, and spots little Red.";
+        spawnedNPCs.Add(SpawnItem(spawner3, RedPrefab, null, SpawnText3, 0));
+        spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 0));
+        spawnedNPCs[0].GetComponent<SteeringBehavior>().target = spawnedNPCs[1].GetComponent<NPCController>();
+        spawnedNPCs[1].GetComponent<SteeringBehavior>().target = spawnedNPCs[0].GetComponent<NPCController>();
+        spawnedNPCs[0].GetComponent<NPCController>().mapState = 3;
+        spawnedNPCs[1].GetComponent<NPCController>().mapState = 3;
+        Invoke("NextPhase", 5);
+    }
 
-        currentPhase = 2; // or whatever. Won't necessarily advance the phase every time
+    private void EnterMapStateFive()
+    {
+        narrator.text = "The two converse, and little Red directs the Wolf to her house.";
+        spawnedNPCs.Add(SpawnItem(spawner3, RedPrefab, null, SpawnText3, 0));
+        spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 0));
+        spawnedNPCs[0].GetComponent<SteeringBehavior>().target = house; // Again this should be the house. Do $
+        spawnedNPCs[1].GetComponent<SteeringBehavior>().target = house; // whatever needs to be done for that $
+        spawnedNPCs[0].GetComponent<NPCController>().mapState = 3;
+        spawnedNPCs[1].GetComponent<NPCController>().mapState = 3;
+        Invoke("NextPhase", 5);
+    }
 
-        //spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 4));
+    private void EnterMapStateSix()
+    {
+        narrator.text = "The Hunter arrives, determined to catch the killer. He spots a house and moves accordingly.";
+        spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, house, SpawnText1, 0));
+        spawnedNPCs[0].GetComponent<SteeringBehavior>().target = house; // Again this should be the house. $
+        spawnedNPCs[0].GetComponent<NPCController>().mapState = 3;
+        Invoke("NextPhase", 5);
+    }
+
+    private void EnterMapStateSeven()
+    {
+        narrator.text = "Days later, reports come in. The killer is still at large, but police have found one clue on its identity. "
+            + "A little red hood. END";
+        Invoke("NextPhase", 5);
     }
 
 
@@ -311,47 +324,6 @@ public class MapStateManager : MonoBehaviour {
         }
         // Following this, write whatever methods you need that you can bolt together to 
         // create more complex movement behaviors.
-    }
-    private void SpawnWolf()
-    {
-        narrator.text = "The Wolf appears. Most wolves are ferocious, but this one is docile.";
-        spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 4));
-    }
-
-    private void Meeting1() {
-        if (currentPhase == 0) {
-            spawnedNPCs[0].GetComponent<SteeringBehavior>().target = spawnedNPCs[1].GetComponent<NPCController>();
-            spawnedNPCs[1].GetComponent<SteeringBehavior>().target = spawnedNPCs[0].GetComponent<NPCController>();
-            SetArrive(spawnedNPCs[0]);
-            SetArrive(spawnedNPCs[1]);
-        }
-    }
-
-    private void SpawnWolf2() {
-        narrator.text = "The Wolf looks for shelter, and spots little Red.";
-        spawnedNPCs.Add(SpawnItem(spawner3, WolfPrefab, spawnedNPCs[2].GetComponent<NPCController>(), SpawnText1, 1));
-        spawnedNPCs[3].GetComponent<NPCController>().label.enabled = true;
-    }
-
-    private void Meeting2() {
-        narrator.text = "The two converse, and little Red directs the Wolf to her house.";
-        spawnedNPCs[2].GetComponent<NPCController>().DestroyPoints();
-        spawnedNPCs[2].GetComponent<NPCController>().phase = 5;
-        spawnedNPCs[3].GetComponent<SteeringBehavior>().target = house;
-        spawnedNPCs[3].GetComponent<NPCController>().phase = 1; ;
-        Invoke("SpawnHunter", 10);
-    }
-
-    private void SpawnHunter() {
-        narrator.text = "The Hunter arrives, determined to catch the killer. He spots a house and moves accordingly.";
-        spawnedNPCs.Add(SpawnItem(spawner3, HunterPrefab, house, SpawnText2, 1));
-        spawnedNPCs[4].GetComponent<NPCController>().label.enabled = true;
-    }
-
-    private void End() {
-        narrator.text = "Days later, reports come in. The killer is still at large, but police have found one clue on its identity. "
-            +"A little red hood. END";
-        currentPhase++;
     }
 
     private void SetArrive(GameObject character) {
