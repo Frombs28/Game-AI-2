@@ -131,7 +131,7 @@ public class MapStateManager : MonoBehaviour {
                 case 6:
                     EnterMapStateSix();
                     break;
-                case 3:
+                case 7:
                     EnterMapStateSeven();
                     break;
         }
@@ -257,7 +257,7 @@ public class MapStateManager : MonoBehaviour {
             temp.GetComponent<SteeringBehavior>().target = target;
         }
         temp.GetComponent<NPCController>().label = spawnText;
-        temp.GetComponent<NPCController>().phase = phase;
+        temp.GetComponent<NPCController>().mapState = phase;
         Camera.main.GetComponent<CameraController>().player = temp;
         return temp;
     }
@@ -308,7 +308,7 @@ public class MapStateManager : MonoBehaviour {
 
     private void SetArrive(GameObject character) {
 
-        character.GetComponent<NPCController>().phase = 3;
+        character.GetComponent<NPCController>().mapState = 3;
         character.GetComponent<NPCController>().DrawConcentricCircle(character.GetComponent<SteeringBehavior>().slowRadiusL);
     }
 
