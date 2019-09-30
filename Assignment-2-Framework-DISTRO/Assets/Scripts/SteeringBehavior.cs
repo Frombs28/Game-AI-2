@@ -68,8 +68,10 @@ public class SteeringBehavior : MonoBehaviour
 
     public SteeringOutput Pursue()
     {
-        Debug.Log(agent + ", " + target);
-        return new DynamicPursue(agent.k, target.k, maxAcceleration, maxPrediction).getSteering();
+        DynamicPursue dp = new DynamicPursue(agent.k, target.k, maxAcceleration, maxPrediction);
+        SteeringOutput so = dp.getSteering();
+        agent.DrawCircle(dp.predictPos, targetRadiusL);
+        return so;
     }
 
     public SteeringOutput Arrive()
@@ -78,7 +80,10 @@ public class SteeringBehavior : MonoBehaviour
     }
     public SteeringOutput Evade()
     {
-        return new DynamicEvade(agent.k, target.k, maxAcceleration, maxPrediction).getSteering();
+        DynamicEvade de = new DynamicEvade(agent.k, target.k, maxAcceleration, maxPrediction);
+        SteeringOutput so = de.getSteering();
+        agent.DrawCircle(de.predictPos, targetRadiusL);
+        return so;
     }
     private float randomBinomial()
     {

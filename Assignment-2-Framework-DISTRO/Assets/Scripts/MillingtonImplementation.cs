@@ -296,10 +296,11 @@ public class DynamicAlign {
 
 class DynamicPursue {
     Kinematic character;
-    Kinematic target;
+    public Kinematic target;
     float maxAcceleration;
     float maxPrediction;
     DynamicSeek ds;
+    public Vector3 predictPos;
     public DynamicPursue(Kinematic _character, Kinematic _target, float _maxAcceleration, float _maxPrediction) {
         character = _character;
         target = _target;
@@ -325,7 +326,7 @@ class DynamicPursue {
 
 
         ds.target.position += target.velocity * prediction;
-
+        predictPos = ds.target.position;
         return ds.getSteering();
 
     }
@@ -338,6 +339,7 @@ class DynamicEvade
     float maxAcceleration;
     float maxPrediction;
     DynamicFlee df;
+    public Vector3 predictPos;
     public DynamicEvade(Kinematic _character, Kinematic _target, float _maxAcceleration, float _maxPrediction)
     {
         character = _character;
@@ -367,7 +369,7 @@ class DynamicEvade
 
 
         df.target.position += target.velocity * prediction;
-
+        predictPos = df.target.position;
         return df.getSteering();
 
     }
@@ -404,10 +406,8 @@ class DynamicFace {
 class DynamicWander {
     float wanderOffset;
     float wanderRadius;
-
     float wanderRate;
     float wanderOrientation;
-
     float maxAcceleration;
     DynamicFace f;
 
@@ -443,7 +443,7 @@ class DynamicWander {
         SteeringOutput steering = f.getSteering();
 
         steering.linear = maxAcceleration * asVector(f.a.character.orientation);
-        Debug.DrawRay(f.a.character.position, asVector(f.a.character.orientation)* maxAcceleration, Color.blue);
+        //Debug.DrawRay(f.a.character.position, asVector(f.a.character.orientation)* maxAcceleration, Color.blue);
         Debug.Log("wander linear = " + steering.linear);
 
         return steering;
