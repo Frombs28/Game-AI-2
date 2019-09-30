@@ -190,7 +190,8 @@ public class DynamicArrive {
         if (distance < targetRadius)
         {
             Debug.Log("INSIDE!!!");
-            steering.linear = -character.velocity;
+            //steering.linear = -character.velocity;
+            steering.linear = Vector3.zero;
             steering.angular = 0;
             return steering;
         }
@@ -450,6 +451,13 @@ class DynamicWander {
 
 }
 
+//wall avoidance,
+//collision detection
+//collision prediction
+//more intelligent wander
+//more intelligent behavior overall
+//chase the Player Character(PC)
+
 //obstacle avoidance
 class ObstacleAvoidance{
 
@@ -466,7 +474,16 @@ class ObstacleAvoidance{
         s = _s;
     }
 
+    public SteeringOutput getSteering() {
+
+        Vector3 rayVector = s.character.velocity;
+        rayVector.Normalize();
+        rayVector *= lookahead;
+
+
+    }
+
     //public SteeringOutput getSteering() { 
-        
+
     //}
 }
