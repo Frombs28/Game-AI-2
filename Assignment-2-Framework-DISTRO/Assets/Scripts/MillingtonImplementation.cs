@@ -97,7 +97,6 @@ public struct Kinematic
 
         if(velocity.magnitude > _maxSpeed)
         {
-            Debug.Log(_maxSpeed);
             velocity.Normalize();
             velocity *= _maxSpeed;
         }
@@ -400,6 +399,7 @@ class DynamicFace {
 }
 
 
+
 class DynamicWander {
     float wanderOffset;
     float wanderRadius;
@@ -408,16 +408,16 @@ class DynamicWander {
     float wanderOrientation;
 
     float maxAcceleration;
-    
     DynamicFace f;
 
     public DynamicWander(float _wanderOffset, float _wanderRadius, float _wanderRate,
-                                 float _maxAcceleration, DynamicFace _f)
+                                 float _maxAcceleration, float _wanderOrientation, DynamicFace _f)
     {
         wanderOffset = _wanderOffset;
         wanderRadius = _wanderRadius;
         wanderRate = _wanderRate;
         maxAcceleration = _maxAcceleration;
+        wanderOrientation = _wanderOrientation;
         f = _f;
         //wanderOrientation = f.a.character.orientation;
     }
@@ -430,7 +430,7 @@ class DynamicWander {
     }
 
     public SteeringOutput getSteering() {
-        wanderOrientation += randomBinomial() * wanderRate;
+
 
         //using face, which is using align which has the characyer;
         float targetOrientation = wanderOrientation + f.a.character.orientation;

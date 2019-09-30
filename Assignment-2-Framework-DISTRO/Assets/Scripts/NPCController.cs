@@ -223,14 +223,6 @@ public class NPCController : MonoBehaviour
 
         k.Update(so, maxSpeed, Time.deltaTime);
 
-        if (target)
-        {
-            //Debug.DrawLine(k.position, target.k.position, Color.cyan);
-            //Debug.DrawRay(k.position, so.linear * 5f, Color.red);
-            //DrawLine(gameObject.transform.position, target.gameObject.transform.position);
-        }
-
-
         //update player
         rb.position = k.position;
         rb.rotation = Quaternion.Euler(Vector3.up * (Mathf.Rad2Deg * -k.orientation));

@@ -174,6 +174,7 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 0));
         spawnedNPCs[0].GetComponent<SteeringBehavior>().target = spawnedNPCs[1].GetComponent<NPCController>();
         spawnedNPCs[1].GetComponent<SteeringBehavior>().target = spawnedNPCs[0].GetComponent<NPCController>();
+
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 3;
         spawnedNPCs[1].GetComponent<NPCController>().mapState = 4;
         Invoke("NextPhase", 5);

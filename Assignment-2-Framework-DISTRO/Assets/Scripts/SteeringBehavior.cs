@@ -14,7 +14,6 @@ public class SteeringBehavior : MonoBehaviour
     public NPCController agent;
     public NPCController target;
 
-    Kinematic agentK;
 
 
 
@@ -51,7 +50,6 @@ public class SteeringBehavior : MonoBehaviour
     protected void Start()
     {
         agent = GetComponent<NPCController>();
-        agentK = agent.k;
     }
 
     public void SetTarget(NPCController newTarget)
@@ -61,38 +59,57 @@ public class SteeringBehavior : MonoBehaviour
 
     public SteeringOutput Seek()
     {
-
-        return new DynamicSeek(agentK, target.k, maxAcceleration).getSteering();
+        return new DynamicSeek(agent.k, target.k, maxAcceleration).getSteering();
     }
     public SteeringOutput Flee()
     {
-        return new DynamicFlee(agentK, target.k, maxAcceleration).getSteering();
+        return new DynamicFlee(agent.k, target.k, maxAcceleration).getSteering();
     }
 
     public SteeringOutput Pursue()
     {
-        return new DynamicPursue(agentK, target.k, maxAcceleration, maxPrediction).getSteering();
+        Debug.Log(agent + ", " + target);
+        return new DynamicPursue(agent.k, target.k, maxAcceleration, maxPrediction).getSteering();
+    }
+
+    public SteeringOutput Arrive()
+    {
+        return new DynamicArrive(agent.k, target.k, maxAcceleration, maxSpeed, targetRadiusL, slowRadiusL).getSteering();
     }
     public SteeringOutput Evade()
     {
-        return new DynamicEvade(agentK, target.k, maxAcceleration, maxPrediction).getSteering();
+        return new DynamicEvade(agent.k, target.k, maxAcceleration, maxPrediction).getSteering();
+    }
+    private float randomBinomial()
+    {
+        return Random.value - Random.value;
     }
     public SteeringOutput Wander()
     {
-        DynamicAlign a = new DynamicAlign(agentK, target.k, maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA);
+        if(startTime > wanderRate) {
+
+            wanderOrientation += randomBinomial() * wanderRate;
+            startTime = 0f;
+        }
+        startTime += Time.deltaTime;
+        DynamicAlign a = new DynamicAlign(agent.k, new Kinematic(), maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA);
         DynamicFace f = new DynamicFace(new Kinematic(), a);
-        return new DynamicWander(wanderOffset, wanderRadius, wanderRate, maxAcceleration, f).getSteering();
+
+        return new DynamicWander(wanderOffset, wanderRadius, wanderRate, maxAcceleration, wanderOrientation, f).getSteering();
+
+
     }
 
     public SteeringOutput Face()
     {
-        DynamicAlign a = new DynamicAlign(agentK, target.k, maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA);
+
+        DynamicAlign a = new DynamicAlign(agent.k, target.k, maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA);
         return new DynamicFace(target.k, a).getSteering();
     }
 
     public SteeringOutput Align()
     {
-        return new DynamicAlign(agentK, target.k, maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA).getSteering();
+        return new DynamicAlign(agent.k, target.k, maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA).getSteering();
     }
 
 
