@@ -95,7 +95,7 @@ public class NPCController : MonoBehaviour
 
                 ai.SetTarget(target);
                 linear = ai.Seek().linear;
-                angular = ai.Seek().angular;
+                angular = ai.Face().angular;
                 DrawLine(gameObject.transform.position, target.gameObject.transform.position);
 
 
@@ -119,7 +119,7 @@ public class NPCController : MonoBehaviour
                 //Debug.Log(velocity);
 
                 linear = ai.Flee().linear;
-                angular = ai.Flee().angular;
+                angular = ai.Face().angular;
                 DrawLine(gameObject.transform.position, target.gameObject.transform.position);
                 break;
 
@@ -135,7 +135,7 @@ public class NPCController : MonoBehaviour
                 //velocity = ai.PursueArrive();
 
                 linear = ai.Pursue().linear;
-                angular = ai.Pursue().angular;
+                angular = ai.Face().angular;
                 DrawCircle(target.transform.position, ai.targetRadiusL);
 
 
@@ -153,7 +153,7 @@ public class NPCController : MonoBehaviour
                 //velocity = ai.PursueArrive();
 
                 linear = ai.Evade().linear;
-                angular = ai.Evade().angular;
+                angular = ai.Face().angular;
                 break;
             case 5:
                 if (label)
@@ -194,8 +194,6 @@ public class NPCController : MonoBehaviour
                 linear = ai.Wander().linear;
                 angular = ai.Wander().angular;
                 break;
-
-                // ADD CASES AS NEEDED
         }
         UpdateMovement(linear, angular, Time.deltaTime);
         if (label)
