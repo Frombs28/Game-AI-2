@@ -131,7 +131,7 @@ public class MapStateManager : MonoBehaviour {
                 case 6:
                     EnterMapStateSix();
                     break;
-                case 3:
+                case 7:
                     EnterMapStateSeven();
                     break;
         }
