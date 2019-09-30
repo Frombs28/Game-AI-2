@@ -480,6 +480,7 @@ class ObstacleAvoidance{
         rayVector.Normalize();
         rayVector *= lookahead;
 
+        return new SteeringOutput();
 
     }
 
