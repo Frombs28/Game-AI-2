@@ -108,6 +108,7 @@ public class MapStateManager : MonoBehaviour {
                             character.SetActive(false);
                             //Debug.Log("Deleted");
                         }
+                        spawnedNPCs.Clear();
                     }
                 }
             }
@@ -169,7 +170,7 @@ public class MapStateManager : MonoBehaviour {
             character.SetActive(false);
             //Debug.Log("Deleted");
         }
-
+        spawnedNPCs.Clear();
         // Now set the correct phase
         if (currentPhase < 7)
         {
@@ -206,6 +207,7 @@ public class MapStateManager : MonoBehaviour {
         narrator.text = "Both the Hunter and Wolf move to another area. Little Red arrives and moves to her house.";
         spawnedNPCs.Add(SpawnItem(spawner3, RedPrefab, null, SpawnText3, 0));
         spawnedNPCs[0].GetComponent<NPCController>().NewTarget(house); // should be house; this might not work yet $
+        spawnedNPCs[0].GetComponent<NPCController>().mapState = 3;
         CreatePath();
         StartCoroutine("NextPhase", 5.0f);
     }
