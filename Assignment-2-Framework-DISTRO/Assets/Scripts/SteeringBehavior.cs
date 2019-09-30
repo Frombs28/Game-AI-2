@@ -7,11 +7,16 @@ using UnityEngine;
 /// to be using. Probably best to put them all here, not in NPCController.
 /// </summary>
 
-public class SteeringBehavior : MonoBehaviour {
+public class SteeringBehavior : MonoBehaviour
+{
 
     // The agent at hand here, and whatever target it is dealing with
     public NPCController agent;
     public NPCController target;
+
+    Kinematic agentK;
+
+
 
     // Below are a bunch of variable declarations that will be used for the next few
     // assignments. Only a few of them are needed for the first assignment.
@@ -21,7 +26,7 @@ public class SteeringBehavior : MonoBehaviour {
     public float maxAcceleration;
 
     // For arrive function
-    public float maxSpeed;
+    public float maxSpeed = 1.0f;
     public float targetRadiusL;
     public float slowRadiusL;
     public float timeToTarget;
@@ -37,37 +42,60 @@ public class SteeringBehavior : MonoBehaviour {
     public float wanderRadius;
     public float wanderRate;
     private float wanderOrientation;
+    public float startTime;
 
     // Holds the path to follow
     public GameObject[] Path;
     public int current = 0;
 
-    protected void Start() {
+    protected void Start()
+    {
         agent = GetComponent<NPCController>();
-        wanderOrientation = agent.orientation;
+        agentK = agent.k;
     }
 
-    public Vector3 Seek() {
-        return new Vector3(0f, 0f, 0f);
-    }
-
-    public Vector3 Flee()
+    public void SetTarget(NPCController newTarget)
     {
-        return new Vector3(0f, 0f, 0f);
+        target = newTarget;
     }
 
-
-    // Calculate the target to pursue
-    public Vector3 Pursue() {
-        return new Vector3(0f, 0f, 0f);
-    }
-
-    public float Face()
+    public SteeringOutput Seek()
     {
-        return 0f;
+
+        return new DynamicSeek(agentK, target.k, maxAcceleration).getSteering();
+    }
+    public SteeringOutput Flee()
+    {
+        return new DynamicFlee(agentK, target.k, maxAcceleration).getSteering();
+    }
+
+    public SteeringOutput Pursue()
+    {
+        return new DynamicPursue(agentK, target.k, maxAcceleration, maxPrediction).getSteering();
+    }
+    public SteeringOutput Evade()
+    {
+        return new DynamicEvade(agentK, target.k, maxAcceleration, maxPrediction).getSteering();
+    }
+    public SteeringOutput Wander()
+    {
+        DynamicAlign a = new DynamicAlign(agentK, target.k, maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA);
+        DynamicFace f = new DynamicFace(new Kinematic(), a);
+        return new DynamicWander(wanderOffset, wanderRadius, wanderRate, maxAcceleration, f).getSteering();
+    }
+
+    public SteeringOutput Face()
+    {
+        DynamicAlign a = new DynamicAlign(agentK, target.k, maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA);
+        return new DynamicFace(target.k, a).getSteering();
+    }
+
+    public SteeringOutput Align()
+    {
+        return new DynamicAlign(agentK, target.k, maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA).getSteering();
     }
 
 
-    // ETC.
 
 }
+

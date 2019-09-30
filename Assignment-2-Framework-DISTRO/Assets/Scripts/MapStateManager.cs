@@ -103,29 +103,11 @@ public class MapStateManager : MonoBehaviour {
         }
         // Check if a game event had caused a change of phase.
         if (currentPhase == previousPhase)
+        {
             return;
-
-
-        /************* FRAMEWORK VERSION
-       // If we get here, we've been given a new phase, from either source
-       switch (currentPhase) {
-           case 0:
-               EnterMapStateZero();
-               break;
-
-           case 1:
-               EnterMapStateOne();
-               break;
-
-           case 2:
-               EnterMapStateTwo();
-               break;
-
-           case 3:
-               break;
-       }
-       **************/
+        }
         previousPhase = currentPhase;
+        // Switch just goes to the correct state, which are all in order and call each other after one is started.
         switch (currentPhase)
             {
                 case 0:
@@ -166,6 +148,7 @@ public class MapStateManager : MonoBehaviour {
             character.SetActive(false);
             Debug.Log("Deleted");
         }
+        // Now set the correct phase
         if (currentPhase < 7)
         {
             currentPhase++;
@@ -253,9 +236,6 @@ public class MapStateManager : MonoBehaviour {
             + "A little red hood. END";
         Invoke("NextPhase", 5);
     }
-
-
-    // ... Etc. Etc.
 
     /// <summary>
     /// SpawnItem placess an NPC of the desired type into the game and sets up the neighboring 
