@@ -79,7 +79,7 @@ public class SteeringBehavior : MonoBehaviour
     }
     public SteeringOutput Wander()
     {
-        DynamicAlign a = new DynamicAlign(agentK, target.k, maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA);
+        DynamicAlign a = new DynamicAlign(agentK, new Kinematic(), maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA);
         DynamicFace f = new DynamicFace(new Kinematic(), a);
         return new DynamicWander(wanderOffset, wanderRadius, wanderRate, maxAcceleration, f).getSteering();
     }

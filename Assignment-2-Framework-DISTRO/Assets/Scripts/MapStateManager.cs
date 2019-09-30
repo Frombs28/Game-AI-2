@@ -50,7 +50,9 @@ public class MapStateManager : MonoBehaviour {
 
     LineRenderer line;                 
     public GameObject[] Path;
-    public Text narrator;                   // 
+    public Text narrator;
+
+    //bool runningThrough = false;
 
     // Use this for initialization. Create any initial NPCs here and store them in the 
     // spawnedNPCs list. You can always add/remove NPCs later on.
@@ -65,7 +67,7 @@ public class MapStateManager : MonoBehaviour {
 
         spawnedNPCs = new List<GameObject>();
         spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 0));
-        Invoke("NextPhase", 3.0f);
+        StartCoroutine("NextPhase", 5.0f);
     }
 
     /// <summary>
@@ -97,6 +99,15 @@ public class MapStateManager : MonoBehaviour {
                     {
                         previousPhase = currentPhase;
                         currentPhase = num;
+                        StopAllCoroutines();
+                        for (int i = spawnedNPCs.Count - 1; i >= 0; i--)
+                        {
+                            GameObject character = spawnedNPCs[i];
+                            character.GetComponent<NPCController>().label.enabled = false;
+                            character.GetComponent<NPCController>().DestroyPoints();
+                            character.SetActive(false);
+                            //Debug.Log("Deleted");
+                        }
                     }
                 }
             }
@@ -137,8 +148,18 @@ public class MapStateManager : MonoBehaviour {
         }
     }
 
-    void NextPhase()
+    IEnumerator NextPhase(float length)
     {
+        // After the input 'length' number of seconds, move on to the next state
+        float startTime = Time.deltaTime;
+        float currentTime = startTime;
+        while (currentTime - startTime <= length)
+        {
+            //Debug.Log(Time.deltaTime - startTime);
+            currentTime += Time.deltaTime;
+            yield return null;
+        }
+
         // First delete all NPCs
         for (int i = spawnedNPCs.Count - 1; i >= 0; i--)
         {
@@ -146,8 +167,9 @@ public class MapStateManager : MonoBehaviour {
             character.GetComponent<NPCController>().label.enabled = false;
             character.GetComponent<NPCController>().DestroyPoints();
             character.SetActive(false);
-            Debug.Log("Deleted");
+            //Debug.Log("Deleted");
         }
+
         // Now set the correct phase
         if (currentPhase < 7)
         {
@@ -164,7 +186,7 @@ public class MapStateManager : MonoBehaviour {
         narrator.text = "The Wolf appears. Most wolves are ferocious, but this one is docile.";
         spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 0));
         spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 7));
-        Invoke("NextPhase", 3);
+        StartCoroutine("NextPhase",5.0f);
     }
 
     private void EnterMapStateOne()
@@ -172,29 +194,29 @@ public class MapStateManager : MonoBehaviour {
         narrator.text = "The Hunter spots the wolf and believes it is his target. The Wolf runs.";
         spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 0));
         spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 0));
-        spawnedNPCs[0].GetComponent<SteeringBehavior>().target = spawnedNPCs[1].GetComponent<NPCController>();
-        spawnedNPCs[1].GetComponent<SteeringBehavior>().target = spawnedNPCs[0].GetComponent<NPCController>();
+        spawnedNPCs[0].GetComponent<NPCController>().NewTarget(spawnedNPCs[1].GetComponent<NPCController>());
+        spawnedNPCs[1].GetComponent<NPCController>().NewTarget(spawnedNPCs[0].GetComponent<NPCController>());
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 3;
         spawnedNPCs[1].GetComponent<NPCController>().mapState = 4;
-        Invoke("NextPhase", 5);
+        StartCoroutine("NextPhase", 5.0f);
     }
 
     private void EnterMapStateTwo()
     {
         narrator.text = "Both the Hunter and Wolf move to another area. Little Red arrives and moves to her house.";
         spawnedNPCs.Add(SpawnItem(spawner3, RedPrefab, null, SpawnText3, 0));
-        spawnedNPCs[0].GetComponent<SteeringBehavior>().target = house; // should be house; this might not work yet $
+        spawnedNPCs[0].GetComponent<NPCController>().NewTarget(house); // should be house; this might not work yet $
         CreatePath();
-        Invoke("NextPhase", 5);
+        StartCoroutine("NextPhase", 5.0f);
     }
 
     private void EnterMapStateThree() {
         narrator.text = "Little Red notices the Wolf and moves toward it.";
         spawnedNPCs.Add(SpawnItem(spawner3, RedPrefab, null, SpawnText3, 0));
         spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 0));
-        spawnedNPCs[0].GetComponent<SteeringBehavior>().target = spawnedNPCs[1].GetComponent<NPCController>();
+        spawnedNPCs[0].GetComponent<NPCController>().NewTarget(spawnedNPCs[1].GetComponent<NPCController>());
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 3;
-        Invoke("NextPhase", 5);
+        StartCoroutine("NextPhase", 5.0f);
     }
 
     private void EnterMapStateFour()
@@ -202,11 +224,11 @@ public class MapStateManager : MonoBehaviour {
         narrator.text = "The Wolf looks for shelter, and spots little Red.";
         spawnedNPCs.Add(SpawnItem(spawner3, RedPrefab, null, SpawnText3, 0));
         spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 0));
-        spawnedNPCs[0].GetComponent<SteeringBehavior>().target = spawnedNPCs[1].GetComponent<NPCController>();
-        spawnedNPCs[1].GetComponent<SteeringBehavior>().target = spawnedNPCs[0].GetComponent<NPCController>();
+        spawnedNPCs[0].GetComponent<NPCController>().NewTarget(spawnedNPCs[1].GetComponent<NPCController>());
+        spawnedNPCs[1].GetComponent<NPCController>().NewTarget(spawnedNPCs[0].GetComponent<NPCController>());
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 3;
         spawnedNPCs[1].GetComponent<NPCController>().mapState = 3;
-        Invoke("NextPhase", 5);
+        StartCoroutine("NextPhase", 5.0f);
     }
 
     private void EnterMapStateFive()
@@ -214,27 +236,27 @@ public class MapStateManager : MonoBehaviour {
         narrator.text = "The two converse, and little Red directs the Wolf to her house.";
         spawnedNPCs.Add(SpawnItem(spawner3, RedPrefab, null, SpawnText3, 0));
         spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 0));
-        spawnedNPCs[0].GetComponent<SteeringBehavior>().target = house; // Again this should be the house. Do $
-        spawnedNPCs[1].GetComponent<SteeringBehavior>().target = house; // whatever needs to be done for that $
+        spawnedNPCs[0].GetComponent<NPCController>().NewTarget(house); // Again this should be the house. Do $
+        spawnedNPCs[1].GetComponent<NPCController>().NewTarget(house); // whatever needs to be done for that $
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 3;
         spawnedNPCs[1].GetComponent<NPCController>().mapState = 3;
-        Invoke("NextPhase", 5);
+        StartCoroutine("NextPhase", 5.0f);
     }
 
     private void EnterMapStateSix()
     {
         narrator.text = "The Hunter arrives, determined to catch the killer. He spots a house and moves accordingly.";
         spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, house, SpawnText1, 0));
-        spawnedNPCs[0].GetComponent<SteeringBehavior>().target = house; // Again this should be the house. $
+        spawnedNPCs[0].GetComponent<NPCController>().NewTarget(house); // Again this should be the house. $
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 3;
-        Invoke("NextPhase", 5);
+        StartCoroutine("NextPhase", 5.0f);
     }
 
     private void EnterMapStateSeven()
     {
         narrator.text = "Days later, reports come in. The killer is still at large, but police have found one clue on its identity. "
             + "A little red hood. END";
-        Invoke("NextPhase", 5);
+        StartCoroutine("NextPhase", 5.0f);
     }
 
     /// <summary>
@@ -254,7 +276,7 @@ public class MapStateManager : MonoBehaviour {
         GameObject temp = Instantiate(spawnPrefab, position, Quaternion.identity);
         if (target)
         {
-            temp.GetComponent<SteeringBehavior>().target = target;
+            temp.GetComponent<NPCController>().NewTarget(target);
         }
         temp.GetComponent<NPCController>().label = spawnText;
         temp.GetComponent<NPCController>().mapState = phase;
