@@ -192,7 +192,7 @@ public class DynamicArrive {
         if (distance < slowRadius)
         {
             //Debug.Log("INSIDE!!!");
-            steering.linear = -2*character.velocity;
+            steering.linear = -3*character.velocity;
             //steering.linear = Vector3.zero;
             steering.angular = 0;
             return steering;
@@ -297,7 +297,7 @@ public class DynamicAlign {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Dynamic Pursue without Arrive
 class DynamicPursue {
-    public Kinematic character;
+    Kinematic character;
     public Kinematic target;
     float maxAcceleration;
     float maxPrediction;
@@ -472,9 +472,9 @@ class DynamicObstacleAvoidance
     public float avoidDistance;
     public float lookahead;
     public Vector3 targetPos;
-    public DynamicPursue s;
+    public DynamicSeek s;
 
-    public DynamicObstacleAvoidance(float _avoidDistance, float _lookahead, DynamicPursue _s) {
+    public DynamicObstacleAvoidance(float _avoidDistance, float _lookahead, DynamicSeek _s) {
         avoidDistance = _avoidDistance;
         lookahead = _lookahead;
         s = _s;
