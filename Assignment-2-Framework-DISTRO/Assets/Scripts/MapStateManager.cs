@@ -218,7 +218,7 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 8;
         spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
         CreatePath();
-        StartCoroutine("NextPhase", 5.0f);
+        StartCoroutine("NextPhase", 20.0f);
     }
 
     private void EnterMapStateThree() {

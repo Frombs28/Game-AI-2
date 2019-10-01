@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 114671874507944792}
   - component: {fileID: 114839489207466526}
   - component: {fileID: 120817520483779392}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Hunter
   m_TagString: Hunter
   m_Icon: {fileID: 0}
@@ -130,7 +130,7 @@ MonoBehaviour:
   orientation: 0
   rotation: 0
   maxSpeed: 4
-  phase: 0
+  mapState: 0
   label: {fileID: 0}
 --- !u!114 &114839489207466526
 MonoBehaviour:
@@ -159,6 +159,7 @@ MonoBehaviour:
   wanderOffset: 5
   wanderRadius: 1
   wanderRate: 1
+  startTime: 0
   Path: []
   current: 0
 --- !u!120 &120817520483779392
@@ -268,7 +269,7 @@ GameObject:
   - component: {fileID: 33618094605339248}
   - component: {fileID: 23541559109898956}
   - component: {fileID: 65547734860827904}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
