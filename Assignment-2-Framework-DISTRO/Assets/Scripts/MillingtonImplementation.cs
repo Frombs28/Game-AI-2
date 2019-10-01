@@ -486,7 +486,7 @@ class DynamicObstacleAvoidance{
             Debug.DrawRay(s.character.position, s.character.velocity, Color.green);
             return s.getSteering();
         }
-        rayVector = Quaternion.AngleAxis(-45, Vector3.up) * rayVector;
+        rayVector = Quaternion.AngleAxis(-30, Vector3.up) * rayVector;
         Debug.DrawRay(s.character.position, rayVector, Color.cyan);
 
         if (Physics.Raycast(s.character.position, rayVector, out collisionDetector, lookahead))
@@ -499,7 +499,7 @@ class DynamicObstacleAvoidance{
             return s.getSteering();
         }
 
-        rayVector = Quaternion.AngleAxis(90, Vector3.up) * rayVector;
+        rayVector = Quaternion.AngleAxis(60, Vector3.up) * rayVector;
         Debug.DrawRay(s.character.position, rayVector, Color.cyan);
 
         if (Physics.Raycast(s.character.position, rayVector, out collisionDetector, lookahead))
