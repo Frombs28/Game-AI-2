@@ -620,12 +620,14 @@ class DynamicObstacleFleeAvoidance
     public float lookahead;
     public Vector3 targetPos;
     public DynamicFlee f;
+    public DynamicSeek s;
 
-    public DynamicObstacleFleeAvoidance(float _avoidDistance, float _lookahead, DynamicFlee _f)
+    public DynamicObstacleFleeAvoidance(float _avoidDistance, float _lookahead, DynamicFlee _f, DynamicSeek _s)
     {
         avoidDistance = _avoidDistance;
         lookahead = _lookahead;
         f = _f;
+        s = _s;
     }
 
     public SteeringOutput getSteering()
@@ -634,7 +636,7 @@ class DynamicObstacleFleeAvoidance
         Vector3 rayVector = f.character.velocity;
         rayVector.Normalize();
         rayVector *= lookahead;
-        Debug.DrawRay(f.character.position, rayVector, Color.cyan);
+        Debug.DrawRay(f.character.position - Vector3.up * 0.5f, rayVector, Color.cyan);
         //Debug.Log(lookahead);
         // Does the ray intersect any objects excluding the player layer
         collisionDetector = new RaycastHit();
@@ -643,10 +645,11 @@ class DynamicObstacleFleeAvoidance
             //Debug.Log("HIT!");
 
             Debug.DrawRay(collisionDetector.point, collisionDetector.normal * avoidDistance, Color.red);
-            f.target.position = collisionDetector.point + (collisionDetector.normal * avoidDistance);
-            targetPos = f.target.position;
-            Debug.DrawRay(f.character.position, f.character.velocity, Color.green);
-            return f.getSteering();
+            s.target.position = collisionDetector.point + (collisionDetector.normal * avoidDistance);
+            Debug.Log("setting new position for flee! " + s.target.position);
+            targetPos = s.target.position;
+            Debug.DrawRay(s.character.position, s.character.velocity, Color.green);
+            return s.getSteering();
         }
         rayVector = Quaternion.AngleAxis(-30, Vector3.up) * rayVector;
         Debug.DrawRay(f.character.position - Vector3.up * 0.5f, rayVector, Color.cyan);
@@ -656,10 +659,10 @@ class DynamicObstacleFleeAvoidance
             //Debug.Log("HIT!");
 
             Debug.DrawRay(collisionDetector.point, collisionDetector.normal * avoidDistance, Color.red);
-            f.target.position = collisionDetector.point + (collisionDetector.normal * avoidDistance);
-            targetPos = f.target.position;
-            Debug.DrawRay(f.character.position, f.character.velocity, Color.green);
-            return f.getSteering();
+            s.target.position = collisionDetector.point + (collisionDetector.normal * avoidDistance);
+            targetPos = s.target.position;
+            Debug.DrawRay(s.character.position, s.character.velocity, Color.green);
+            return s.getSteering();
         }
 
         rayVector = Quaternion.AngleAxis(60, Vector3.up) * rayVector;
@@ -670,10 +673,10 @@ class DynamicObstacleFleeAvoidance
             //Debug.Log("HIT!");
 
             Debug.DrawRay(collisionDetector.point, collisionDetector.normal * avoidDistance, Color.red);
-            f.target.position = collisionDetector.point + (collisionDetector.normal * avoidDistance);
-            targetPos = f.target.position;
-            Debug.DrawRay(f.character.position, f.character.velocity, Color.green);
-            return f.getSteering();
+            s.target.position = collisionDetector.point + (collisionDetector.normal * avoidDistance);
+            targetPos = s.target.position;
+            Debug.DrawRay(s.character.position, s.character.velocity, Color.green);
+            return s.getSteering();
         }
 
         //Debug.Log("Good");

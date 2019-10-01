@@ -163,7 +163,8 @@ public class SteeringBehavior : MonoBehaviour
     {
         //DynamicEvade de = new DynamicEvade(agent.k, target.k, maxAcceleration,maxPrediction);
         DynamicFlee f = new DynamicFlee(agent.k, target.k, maxAcceleration);
-        DynamicObstacleFleeAvoidance dofa = new DynamicObstacleFleeAvoidance(5f, 5f, f);
+        DynamicSeek s = new DynamicSeek(agent.k, target.k, maxAcceleration);
+        DynamicObstacleFleeAvoidance dofa = new DynamicObstacleFleeAvoidance(5f, 5f, f, s);
         SteeringOutput so = dofa.getSteering();
         agent.DrawLine(agent.k.position, dofa.targetPos);
         return so;
