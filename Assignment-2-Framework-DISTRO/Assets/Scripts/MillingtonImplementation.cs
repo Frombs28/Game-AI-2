@@ -486,6 +486,31 @@ class DynamicObstacleAvoidance{
             Debug.DrawRay(s.character.position, s.character.velocity, Color.green);
             return s.getSteering();
         }
+        rayVector = Quaternion.AngleAxis(-45, Vector3.up) * rayVector;
+        Debug.DrawRay(s.character.position, rayVector, Color.cyan);
+
+        if (Physics.Raycast(s.character.position, rayVector, out collisionDetector, lookahead))
+        {
+            Debug.Log("HIT!");
+
+            Debug.DrawRay(collisionDetector.point, collisionDetector.normal * avoidDistance, Color.red);
+            s.target.position = collisionDetector.point + (collisionDetector.normal * avoidDistance);
+            Debug.DrawRay(s.character.position, s.character.velocity, Color.green);
+            return s.getSteering();
+        }
+
+        rayVector = Quaternion.AngleAxis(90, Vector3.up) * rayVector;
+        Debug.DrawRay(s.character.position, rayVector, Color.cyan);
+
+        if (Physics.Raycast(s.character.position, rayVector, out collisionDetector, lookahead))
+        {
+            Debug.Log("HIT!");
+
+            Debug.DrawRay(collisionDetector.point, collisionDetector.normal * avoidDistance, Color.red);
+            s.target.position = collisionDetector.point + (collisionDetector.normal * avoidDistance);
+            Debug.DrawRay(s.character.position, s.character.velocity, Color.green);
+            return s.getSteering();
+        }
 
         Debug.Log("Good");
         Debug.DrawRay(s.character.position, s.character.velocity, Color.green);
