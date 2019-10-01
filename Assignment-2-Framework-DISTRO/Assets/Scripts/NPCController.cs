@@ -118,11 +118,11 @@ public class NPCController : MonoBehaviour
             case 4:
                 if (label)
                 {
-                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Dynamic Evade";
+                    label.text = name.Replace("(Clone)", "") + "\nEvade with Obstacle Avoidance";
                 }
                 stopped = false;
                 ai.SetTarget(target);
-                linear = ai.Evade().linear;
+                linear = ai.ObstacleFlee().linear;
                 angular = ai.Face().angular;
                 break;
             case 5:
@@ -166,7 +166,7 @@ public class NPCController : MonoBehaviour
                 //rotation = ai.Face(rotation, linear);
                 ai.SetTarget(target);
                 linear = ai.ObstacleAvoidance().linear;
-                angular = ai.ObstacleAvoidance().angular;
+                angular = ai.Face().angular;
                 break;
             case 9:
                 if (label)
@@ -182,7 +182,7 @@ public class NPCController : MonoBehaviour
             case 10:
                 break;
         }
-        if(mapState == 9)
+        if(mapState == 10)
         {
             return;
         }
@@ -191,6 +191,19 @@ public class NPCController : MonoBehaviour
         {
             label.transform.position = Camera.main.WorldToScreenPoint(this.transform.position);
         }
+    }
+
+    public void UpdateFromPlayer(Vector3 newLinear, float newAngular)
+    {
+        so.linear = newLinear;
+        so.angular = newAngular;
+        k.position = rb.position;
+
+        k.Update(so, maxSpeed, Time.deltaTime);
+
+        //update player
+        rb.position = k.position;
+        rb.rotation = Quaternion.Euler(Vector3.up * (Mathf.Rad2Deg * -k.orientation));
     }
 
     /// <summary>
@@ -205,7 +218,7 @@ public class NPCController : MonoBehaviour
     {
         // Update the orientation, velocity and rotation
 
-        if (mapState == 9)
+        if (mapState == 10)
         {
             return;
         }

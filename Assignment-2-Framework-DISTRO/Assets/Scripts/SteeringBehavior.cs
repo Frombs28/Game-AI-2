@@ -87,8 +87,8 @@ public class SteeringBehavior : MonoBehaviour
         if(dis <= slowRadiusL) {
             return Arrive();
         }
-
         DynamicPursue dp = new DynamicPursue(agent.k, target.k, maxAcceleration, maxPrediction);
+        agent.DrawCircle(dp.predictPos, targetRadiusL);
         return dp.getSteering();
     }
     public SteeringOutput Evade()
@@ -141,9 +141,29 @@ public class SteeringBehavior : MonoBehaviour
 
     public SteeringOutput ObstacleAvoidance()
     {
-
         DynamicSeek s = new DynamicSeek(agent.k, target.k, maxAcceleration);
-        return new DynamicObstacleAvoidance(5f, 5f, s).getSteering();
+        DynamicObstacleAvoidance doa = new DynamicObstacleAvoidance(5f, 5f, s);
+        SteeringOutput so = doa.getSteering();
+        agent.DrawLine(agent.k.position,doa.targetPos);
+        return so;
+    }
+
+    public SteeringOutput PlayerObstacleAvoidance()
+    {
+        DynamicSeek s = new DynamicSeek(agent.k, target.k, maxAcceleration);
+        DynamicObstacleAvoidance doa = new DynamicObstacleAvoidance(5f, 5f, s);
+        SteeringOutput so = doa.getSteering();
+        agent.DrawLine(agent.k.position, doa.targetPos);
+        return so;
+    }
+
+    public SteeringOutput ObstacleFlee()
+    {
+        DynamicFlee f = new DynamicFlee(agent.k, target.k, maxAcceleration);
+        DynamicObstacleFleeAvoidance dofa = new DynamicObstacleFleeAvoidance(5f, 5f, f);
+        SteeringOutput so = dofa.getSteering();
+        agent.DrawLine(agent.k.position, dofa.targetPos);
+        return so;
     }
 
 

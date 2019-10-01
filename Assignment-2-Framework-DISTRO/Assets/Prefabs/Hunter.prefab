@@ -147,7 +147,7 @@ MonoBehaviour:
   agent: {fileID: 114671874507944792}
   target: {fileID: 0}
   maxPrediction: 1
-  maxAcceleration: 4
+  maxAcceleration: 26.64
   maxSpeed: 4
   targetRadiusL: 2
   slowRadiusL: 5

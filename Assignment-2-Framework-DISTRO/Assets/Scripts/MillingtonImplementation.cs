@@ -78,7 +78,7 @@ public class MillingtonImplementation : MonoBehaviour
 
     }
 }
-
+// The Kinematic class is used to physically manipulate the objects. Gives us greater control over the object's movements.
 public struct Kinematic
 {
     public Vector3 position;
@@ -108,14 +108,17 @@ public struct Kinematic
         return new Vector3(Mathf.Sin(_orientation), 0f, Mathf.Cos(_orientation));
     }
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Steering Output is used by all classes, as it is a structure that holds a linear vector3 and a float representing the angular
+// acceleration of the object.
 public struct SteeringOutput {
 
     public Vector3 linear;
     public float angular;
 
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Dynamic Seek
 public class DynamicSeek{
     public Kinematic character;
     public Kinematic target;
@@ -136,7 +139,8 @@ public class DynamicSeek{
         return steering;
     }
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Dynamic Flee
 public class DynamicFlee
 {
     public Kinematic character;
@@ -159,7 +163,8 @@ public class DynamicFlee
         return steering;
     }
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Dynamic Pursue with Arrive
 public class DynamicArrive {
     Kinematic character;
     Kinematic target;
@@ -186,7 +191,7 @@ public class DynamicArrive {
 
         if (distance < slowRadius)
         {
-            Debug.Log("INSIDE!!!");
+            //Debug.Log("INSIDE!!!");
             steering.linear = -3*character.velocity;
             //steering.linear = Vector3.zero;
             steering.angular = 0;
@@ -198,7 +203,7 @@ public class DynamicArrive {
             targetSpeed = maxSpeed;
         }
         else {
-            Debug.Log("inside slow radius!!! :" + distance / slowRadius);
+            //Debug.Log("inside slow radius!!! :" + distance / slowRadius);
             targetSpeed = maxSpeed * (distance / slowRadius);
         }
 
@@ -219,8 +224,8 @@ public class DynamicArrive {
         return steering;
     }
 }
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Dynamic Align
 public class DynamicAlign {
 
     public Kinematic character;
@@ -289,7 +294,8 @@ public class DynamicAlign {
     }
 
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Dynamic Pursue without Arrive
 class DynamicPursue {
     Kinematic character;
     public Kinematic target;
@@ -327,7 +333,8 @@ class DynamicPursue {
 
     }
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Dynamic Evade
 class DynamicEvade
 {
     Kinematic character;
@@ -370,7 +377,8 @@ class DynamicEvade
 
     }
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Dynamic Face
 class DynamicFace {
     public Kinematic target;
     public DynamicAlign a;
@@ -396,9 +404,8 @@ class DynamicFace {
     }
 
 }
-
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Dynamic Wander
 class DynamicWander {
     float wanderOffset;
     float wanderRadius;
@@ -442,25 +449,29 @@ class DynamicWander {
 
         steering.linear = maxAcceleration * asVector(f.a.character.orientation);
         //Debug.DrawRay(f.a.character.position, asVector(f.a.character.orientation)* maxAcceleration, Color.blue);
-        Debug.Log("wander linear = " + steering.linear);
+        //Debug.Log("wander linear = " + steering.linear);
 
         return steering;
     }
 
 }
+// For this assignement we need:
+// collision prediction
+// more intelligent wander
+// more intelligent behavior overall
+// chase the Player Character(PC)
+// obstacle avoidance
 
-//collision prediction
-//more intelligent wander
-//more intelligent behavior overall
-//chase the Player Character(PC)
 
-//obstacle avoidance
-class DynamicObstacleAvoidance{
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Pursue with Obstacle Avoidance and Arrival
+class DynamicObstacleAvoidance
+{
 
     public RaycastHit collisionDetector;
     public float avoidDistance;
     public float lookahead;
-
+    public Vector3 targetPos;
     public DynamicSeek s;
 
     public DynamicObstacleAvoidance(float _avoidDistance, float _lookahead, DynamicSeek _s) {
@@ -475,14 +486,15 @@ class DynamicObstacleAvoidance{
         rayVector.Normalize();
         rayVector *= lookahead;
         Debug.DrawRay(s.character.position, rayVector, Color.cyan);
-        Debug.Log(lookahead);
+        //Debug.Log(lookahead);
         // Does the ray intersect any objects excluding the player layer
         collisionDetector = new RaycastHit();
         if (Physics.Raycast(s.character.position - Vector3.up * 0.5f, rayVector, out collisionDetector, lookahead)) {
-            Debug.Log("HIT!");
+            //Debug.Log("HIT!");
 
             Debug.DrawRay(collisionDetector.point, collisionDetector.normal * avoidDistance, Color.red);
             s.target.position = collisionDetector.point + (collisionDetector.normal * avoidDistance);
+            targetPos = s.target.position;
             Debug.DrawRay(s.character.position, s.character.velocity, Color.green);
             return s.getSteering();
         }
@@ -491,10 +503,11 @@ class DynamicObstacleAvoidance{
 
         if (Physics.Raycast(s.character.position - Vector3.up * 0.5f, rayVector, out collisionDetector, lookahead))
         {
-            Debug.Log("HIT!");
+            //Debug.Log("HIT!");
 
             Debug.DrawRay(collisionDetector.point, collisionDetector.normal * avoidDistance, Color.red);
             s.target.position = collisionDetector.point + (collisionDetector.normal * avoidDistance);
+            targetPos = s.target.position;
             Debug.DrawRay(s.character.position, s.character.velocity, Color.green);
             return s.getSteering();
         }
@@ -504,23 +517,101 @@ class DynamicObstacleAvoidance{
 
         if (Physics.Raycast(s.character.position - Vector3.up *0.5f, rayVector, out collisionDetector, lookahead))
         {
-            Debug.Log("HIT!");
+            //Debug.Log("HIT!");
 
             Debug.DrawRay(collisionDetector.point, collisionDetector.normal * avoidDistance, Color.red);
             s.target.position = collisionDetector.point + (collisionDetector.normal * avoidDistance);
+            targetPos = s.target.position;
             Debug.DrawRay(s.character.position, s.character.velocity, Color.green);
             return s.getSteering();
         }
 
-        Debug.Log("Good");
+        //Debug.Log("Good");
         Debug.DrawRay(s.character.position - Vector3.up * 0.5f, s.character.velocity, Color.green);
+        targetPos = s.target.position;
         return s.getSteering();
 
 
 
     }
 
+
     //public SteeringOutput getSteering() { 
 
     //}
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Pursue with Obstacle Avoidance and Arrival
+class DynamicObstacleFleeAvoidance
+{
+
+    public RaycastHit collisionDetector;
+    public float avoidDistance;
+    public float lookahead;
+    public Vector3 targetPos;
+    public DynamicFlee f;
+
+    public DynamicObstacleFleeAvoidance(float _avoidDistance, float _lookahead, DynamicFlee _f)
+    {
+        avoidDistance = _avoidDistance;
+        lookahead = _lookahead;
+        f = _f;
+    }
+
+    public SteeringOutput getSteering()
+    {
+
+        Vector3 rayVector = f.character.velocity;
+        rayVector.Normalize();
+        rayVector *= lookahead;
+        Debug.DrawRay(f.character.position, rayVector, Color.cyan);
+        //Debug.Log(lookahead);
+        // Does the ray intersect any objects excluding the player layer
+        collisionDetector = new RaycastHit();
+        if (Physics.Raycast(f.character.position - Vector3.up * 0.5f, rayVector, out collisionDetector, lookahead))
+        {
+            //Debug.Log("HIT!");
+
+            Debug.DrawRay(collisionDetector.point, collisionDetector.normal * avoidDistance, Color.red);
+            f.target.position = collisionDetector.point + (collisionDetector.normal * avoidDistance);
+            targetPos = f.target.position;
+            Debug.DrawRay(f.character.position, f.character.velocity, Color.green);
+            return f.getSteering();
+        }
+        rayVector = Quaternion.AngleAxis(-30, Vector3.up) * rayVector;
+        Debug.DrawRay(f.character.position - Vector3.up * 0.5f, rayVector, Color.cyan);
+
+        if (Physics.Raycast(f.character.position - Vector3.up * 0.5f, rayVector, out collisionDetector, lookahead))
+        {
+            //Debug.Log("HIT!");
+
+            Debug.DrawRay(collisionDetector.point, collisionDetector.normal * avoidDistance, Color.red);
+            f.target.position = collisionDetector.point + (collisionDetector.normal * avoidDistance);
+            targetPos = f.target.position;
+            Debug.DrawRay(f.character.position, f.character.velocity, Color.green);
+            return f.getSteering();
+        }
+
+        rayVector = Quaternion.AngleAxis(60, Vector3.up) * rayVector;
+        Debug.DrawRay(f.character.position - Vector3.up * 0.5f, rayVector, Color.cyan);
+
+        if (Physics.Raycast(f.character.position - Vector3.up * 0.5f, rayVector, out collisionDetector, lookahead))
+        {
+            //Debug.Log("HIT!");
+
+            Debug.DrawRay(collisionDetector.point, collisionDetector.normal * avoidDistance, Color.red);
+            f.target.position = collisionDetector.point + (collisionDetector.normal * avoidDistance);
+            targetPos = f.target.position;
+            Debug.DrawRay(f.character.position, f.character.velocity, Color.green);
+            return f.getSteering();
+        }
+
+        //Debug.Log("Good");
+        Debug.DrawRay(f.character.position - Vector3.up * 0.5f, f.character.velocity, Color.green);
+        targetPos = f.target.position;
+        return f.getSteering();
+    }
+
+
+
 }

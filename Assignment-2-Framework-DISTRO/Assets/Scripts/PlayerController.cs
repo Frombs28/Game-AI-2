@@ -20,12 +20,7 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     void Start() {
         rb = GetComponent<Rigidbody>();
-        k = new Kinematic
-        {
-            position = rb.position,
-            velocity = Vector3.zero,
-            orientation = Mathf.Deg2Rad * rb.rotation.eulerAngles.y
-        };
+        k = GetComponent<NPCController>().k;
     }
 
     /// <summary>
@@ -37,13 +32,14 @@ public class PlayerController : MonoBehaviour {
     void FixedUpdate() {
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
-
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-
-        k.velocity = movement;
-        k.position = rb.position;
-
         rb.AddForce(movement * speed);
+        /*
+        k.velocity = rb.velocity;
+        k.position = rb.position;
+        */
+        //Debug.Log(k.position);
+        GetComponent<NPCController>().UpdateFromPlayer(movement * speed, 0.0f);
     }
 
 }
