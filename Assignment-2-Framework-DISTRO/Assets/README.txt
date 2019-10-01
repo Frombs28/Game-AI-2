@@ -1,5 +1,5 @@
-﻿Stephen Frombach: Worked on Seek and Flee, Dynamic Wander, and the Phase Manager/Line Renderer
-Simon Hopkins: Worked on Pursue with Approach, Evade, Align, and Face
+﻿Stephen Frombach: Worked on More Intelligent Wander, new Map StateManager, new Line Renderer
+Simon Hopkins: Worked on More Intelligent behavior, Obstacle/Wall avoidance
 
 How Phases Work:
 
