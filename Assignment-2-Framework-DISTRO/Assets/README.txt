@@ -13,7 +13,7 @@ Scene 1: Pursue/arrive and Evade with obstacle/wall avoidance
 Scene 2: Pursue/arrive a still object with obstacle/wall avoidance
 Scene 3: Pursue/arrive a still object with obstacle/wall avoidance
 Scene 4: Pursue/arrive and Pursue/arrive with obstacle/wall avoidance
-Scene 5: 2 Pursue/arrive a still object with ocollision detection/prediction
+Scene 5: 2 Pursue/arrive a still object with collision detection/prediction
 Scene 6: Pursue/arrive a still object with obstacle/wall avoidance
 Scene 7: Pursue/arrive a still object with obstacle/wall avoidance to the player
 Scene 8: Nothing but text

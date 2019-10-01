@@ -169,9 +169,26 @@ public class SteeringBehavior : MonoBehaviour
         return so;
     }
 
+    public SteeringOutput ObstacleWander()
+    {
+        if (startTime > wanderRate)
+        {
     public SteeringOutput CollisionAvoidance() {
         float radius = 1f;
 
+            wanderOrientation += randomBinomial() * wanderRate;
+            startTime = 0f;
+        }
+        startTime += Time.deltaTime;
+        DynamicAlign a = new DynamicAlign(agent.k, new Kinematic(), maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA);
+        DynamicFace f = new DynamicFace(new Kinematic(), a);
+        DynamicWander dw = new DynamicWander(wanderOffset, wanderRadius, wanderRate, maxAcceleration, wanderOrientation, f);
+        SteeringOutput so = dw.getSteering();
+        agent.DrawCircle(dw.targetPos, wanderRadius);
+        DynamicObstacleWanderAvoidance dowa = new DynamicObstacleWanderAvoidance(5f, 5f, dw);
+        so = dowa.getSteering();
+        return so;
+    }
         return new DynamicCollisionAvoidance(agent.k, radius, targets, maxAcceleration).getSteering();
         
     }
