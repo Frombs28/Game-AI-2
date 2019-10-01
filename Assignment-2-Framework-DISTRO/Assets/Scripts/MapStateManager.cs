@@ -146,6 +146,9 @@ public class MapStateManager : MonoBehaviour {
                 case 7:
                     EnterMapStateSeven();
                     break;
+                case 8:
+                    EnterMapStateEight();
+                    break;
 
         }
     }
@@ -173,7 +176,7 @@ public class MapStateManager : MonoBehaviour {
         }
         spawnedNPCs.Clear();
         // Now set the correct phase
-        if (currentPhase < 7)
+        if (currentPhase < 8)
         {
             currentPhase++;
         }
@@ -267,6 +270,18 @@ public class MapStateManager : MonoBehaviour {
     }
 
     private void EnterMapStateSeven()
+    {
+        narrator.text = "The Hunter sees YOU (Player) moving aroudn the woods and descides to give chase, ignoring the house.";
+        spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, house, SpawnText1, 0));
+        spawnedNPCs.Add(SpawnItem(spawner3, PlayerPrefab, house, SpawnText1, 0));
+        spawnedNPCs[0].GetComponent<NPCController>().NewTarget(spawnedNPCs[1].GetComponent<NPCController>()); // Again this should be the house. $
+        spawnedNPCs[0].GetComponent<NPCController>().mapState = 8;
+        spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
+        spawnedNPCs[1].GetComponent<NPCController>().mapState = 10;
+        StartCoroutine("NextPhase", 5.0f);
+    }
+
+    private void EnterMapStateEight()
     {
         narrator.text = "Days later, reports come in. The killer is still at large, but police have found one clue on its identity. "
             + "A little red hood. END";

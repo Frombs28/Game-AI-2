@@ -180,6 +180,12 @@ public class NPCController : MonoBehaviour
                 linear = ai.ObstacleAvoidance().linear;
                 angular = ai.ObstacleAvoidance().angular;
                 break;
+            case 10:
+                break;
+        }
+        if(mapState == 9)
+        {
+            return;
         }
         UpdateMovement(linear, angular, Time.deltaTime);
         if (label)
@@ -200,7 +206,10 @@ public class NPCController : MonoBehaviour
     {
         // Update the orientation, velocity and rotation
 
-
+        if (mapState == 9)
+        {
+            return;
+        }
         so.linear = _linear;
         so.angular = _angular;
         k.position = rb.position;

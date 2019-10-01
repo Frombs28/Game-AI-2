@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour {
 
     public float speed;     
     private Rigidbody rb;
+    Kinematic k;
 
     /// <summary>
     /// Start() is called only once for any GameObject. Here, we want to retrieve
@@ -19,6 +20,12 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     void Start() {
         rb = GetComponent<Rigidbody>();
+        k = new Kinematic
+        {
+            position = rb.position,
+            velocity = Vector3.zero,
+            orientation = Mathf.Deg2Rad * rb.rotation.eulerAngles.y
+        };
     }
 
     /// <summary>
@@ -32,6 +39,9 @@ public class PlayerController : MonoBehaviour {
         float moveVertical = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+
+        k.velocity = movement;
+        k.position = rb.position;
 
         rb.AddForce(movement * speed);
     }
