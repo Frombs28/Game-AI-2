@@ -190,7 +190,7 @@ public class NPCController : MonoBehaviour
                 //rotation = ai.Face(rotation, linear);
                 ai.SetTarget(target);
                 linear = ai.CollisionAvoidance().linear;
-                angular = ai.CollisionAvoidance().angular;
+                angular = ai.Face().angular;
                 break;
         }
         if(mapState == 10)

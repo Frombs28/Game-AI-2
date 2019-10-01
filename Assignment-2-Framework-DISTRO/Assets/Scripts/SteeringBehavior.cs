@@ -193,8 +193,8 @@ public class SteeringBehavior : MonoBehaviour
         float radius = 1f;
         SteeringOutput so = new SteeringOutput();
         SteeringOutput dca = new DynamicCollisionAvoidance(agent.k, radius, targets, maxAcceleration).getSteering();
-        so.linear = Seek().linear + dca.linear;
-        so.angular = Seek().angular + dca.angular;
+        so.linear = ObstacleAvoidance().linear + dca.linear;
+        so.angular = ObstacleAvoidance().angular + dca.angular;
         return so;
     }
 

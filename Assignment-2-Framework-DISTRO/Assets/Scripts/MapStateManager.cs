@@ -254,8 +254,8 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 0));
         spawnedNPCs[0].GetComponent<NPCController>().NewTarget(house);
         spawnedNPCs[1].GetComponent<NPCController>().NewTarget(house);
-        spawnedNPCs[0].GetComponent<NPCController>().mapState = 8;
-        spawnedNPCs[1].GetComponent<NPCController>().mapState = 8;
+        spawnedNPCs[0].GetComponent<NPCController>().mapState = 11;
+        spawnedNPCs[1].GetComponent<NPCController>().mapState = 11;
         spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
         spawnedNPCs[1].GetComponent<NPCController>().label.enabled = true;
         StartCoroutine("NextPhase", 30.0f);
