@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MillingtonImplementation : MonoBehaviour
 {
@@ -86,6 +87,7 @@ public struct Kinematic
     public Vector3 velocity;
     public float rotation; //angular velocity
     public float maxSpeed;
+
     public void Update(SteeringOutput steering, float _maxSpeed, float time) {
 
         position += velocity * time;
@@ -534,11 +536,79 @@ class DynamicObstacleAvoidance
 
 
     }
+}
 
 
     //public SteeringOutput getSteering() { 
+class DynamicCollisionAvoidance {
+    Kinematic character;
+    float radius;
+    List<NPCController> targets;
+    float maxAcceleration;
 
-    //}
+    public DynamicCollisionAvoidance(Kinematic _character, float _radius, List<NPCController> _targets, float _maxAcceleration) {
+        character = _character;
+        radius = _radius;
+        targets = _targets;
+        maxAcceleration = _maxAcceleration;
+    }
+
+    public SteeringOutput getSteering() {
+        SteeringOutput steering = new SteeringOutput();
+        float shortestTime = Mathf.Infinity;
+
+        Kinematic firstTarget = new Kinematic();
+        bool setFirstTarget = false;
+        float firstMinSeparation = 0;
+        float firstDistance = 0;
+        Vector3 firstRelativePos= Vector3.zero;
+        Vector3 firstRelativeVel = Vector3.zero;
+        float distance = 0;
+
+        Vector3 relativePos = Vector3.zero;
+        foreach(NPCController target in targets) {
+            relativePos = target.position - character.position;
+            Vector3 relativeVel = target.k.velocity - character.velocity;
+            float relativeSpeed = relativeVel.magnitude;
+            float timeToCollision = (Vector3.Dot(relativePos, relativeVel)) / (relativeSpeed * relativeSpeed);
+            distance = relativePos.magnitude;
+            float minSeperation = distance - (relativeSpeed * shortestTime);
+            if(minSeperation > radius) {
+                continue;
+            }
+            if(timeToCollision>0 && timeToCollision < shortestTime) {
+                shortestTime = timeToCollision;
+                firstTarget = target.k;
+                setFirstTarget = true;
+                firstMinSeparation = minSeperation;
+                firstDistance = distance;
+                firstRelativePos = relativePos;
+                firstRelativeVel = relativeVel;
+            }
+
+
+
+        }
+
+        if (!setFirstTarget)
+        {
+            return new SteeringOutput();
+        }
+        if (firstMinSeparation <= 0 || distance < 2 * radius)
+        {
+            relativePos = firstTarget.position - character.position;
+        }
+        else
+        {
+            relativePos = firstRelativePos + firstRelativeVel * shortestTime;
+        }
+
+        relativePos.Normalize();
+        steering.linear = relativePos * maxAcceleration;
+        return steering;
+
+    }
+
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Evade with Obstacle Avoidance and Arrival

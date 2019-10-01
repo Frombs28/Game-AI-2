@@ -47,6 +47,9 @@ public class SteeringBehavior : MonoBehaviour
     public GameObject[] Path;
     public int current = 0;
 
+    [SerializeField]
+    public List<NPCController> targets;
+
     protected void Start()
     {
         agent = GetComponent<NPCController>();
@@ -171,7 +174,6 @@ public class SteeringBehavior : MonoBehaviour
     {
         if (startTime > wanderRate)
         {
-
             wanderOrientation += randomBinomial() * wanderRate;
             startTime = 0f;
         }
@@ -183,6 +185,16 @@ public class SteeringBehavior : MonoBehaviour
         agent.DrawCircle(dw.targetPos, wanderRadius);
         DynamicObstacleWanderAvoidance dowa = new DynamicObstacleWanderAvoidance(5f, 5f, dw);
         so = dowa.getSteering();
+        return so;
+    }
+
+    public SteeringOutput CollisionAvoidance() {
+
+        float radius = 1f;
+        SteeringOutput so = new SteeringOutput();
+        SteeringOutput dca = new DynamicCollisionAvoidance(agent.k, radius, targets, maxAcceleration).getSteering();
+        so.linear = Seek().linear + dca.linear;
+        so.angular = Seek().angular + dca.angular;
         return so;
     }
 
