@@ -1,4 +1,4 @@
-﻿Stephen Frombach: Worked on More Intelligent Wander, new Map StateManager, new Line Renderer
+﻿Stephen Frombach: Worked on More Intelligent Wander, Obstacle/Wall avoidance, new Map StateManager, new Line Renderer
 Simon Hopkins: Worked on More Intelligent pursue, Obstacle/Wall avoidance, Collision avoidance
 
 The important parts of this implementation reside in NPCController.cs, SteeringBehavior.cs, and MillingtonImplementation.cs. MillingtonImplementation is the most important file; in it are all of our code for the various algorithms, written as separate classes. NPCController acts mostly as a switch telling the object which algorithm to run. SteeringBehavior takes the appropriate algorithm, given from NPCController, and determines which classes from MillingtonImplementation it requires.
