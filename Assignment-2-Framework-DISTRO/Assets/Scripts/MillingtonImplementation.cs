@@ -449,8 +449,6 @@ class DynamicWander {
 
 }
 
-//wall avoidance,
-//collision detection
 //collision prediction
 //more intelligent wander
 //more intelligent behavior overall
