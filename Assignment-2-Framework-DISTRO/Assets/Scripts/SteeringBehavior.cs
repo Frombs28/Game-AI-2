@@ -85,7 +85,8 @@ public class SteeringBehavior : MonoBehaviour
             return Arrive();
         }
 
-        return Pursue();
+        DynamicPursue dp = new DynamicPursue(agent.k, target.k, maxAcceleration, maxPrediction);
+        return dp.getSteering();
     }
     public SteeringOutput Evade()
     {
@@ -124,6 +125,13 @@ public class SteeringBehavior : MonoBehaviour
     public SteeringOutput Align()
     {
         return new DynamicAlign(agent.k, target.k, maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA).getSteering();
+    }
+
+    public SteeringOutput ObstacleAvoidance()
+    {
+
+        DynamicSeek s = new DynamicSeek(agent.k, target.k, maxAcceleration);
+        return new DynamicObstacleAvoidance(5f, 5f, s).getSteering();
     }
 
 
