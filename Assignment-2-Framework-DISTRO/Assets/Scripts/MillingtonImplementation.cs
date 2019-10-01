@@ -540,7 +540,7 @@ class DynamicObstacleAvoidance
 
 
     //public SteeringOutput getSteering() { 
-
+class DynamicCollisionAvoidance {
     Kinematic character;
     float radius;
     List<NPCController> targets;

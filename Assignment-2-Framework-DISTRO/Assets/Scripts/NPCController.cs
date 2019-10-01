@@ -181,11 +181,24 @@ public class NPCController : MonoBehaviour
                 break;
             case 10:
                 break;
+            case 11:
+                if (label)
+                {
+                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Seek with Collision Avoidance";
+                }
+                stopped = false;
+                //rotation = ai.Face(rotation, linear);
+                ai.SetTarget(target);
+                linear = ai.CollisionAvoidance().linear;
+                angular = ai.CollisionAvoidance().angular;
+                break;
         }
         if(mapState == 10)
         {
             return;
         }
+
+
         UpdateMovement(linear, angular, Time.deltaTime);
         if (label)
         {
