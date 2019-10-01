@@ -76,7 +76,10 @@ public class SteeringBehavior : MonoBehaviour
 
     public SteeringOutput Arrive()
     {
-        return new DynamicArrive(agent.k, target.k, maxAcceleration, maxSpeed, targetRadiusL, slowRadiusL).getSteering();
+        DynamicArrive da = new DynamicArrive(agent.k, target.k, maxAcceleration, maxSpeed, targetRadiusL, slowRadiusL);
+        agent.DrawCircle(target.k.position, slowRadiusL);
+        SteeringOutput so = da.getSteering();
+        return so;
     }
 
     public SteeringOutput PursueArrive() {
@@ -98,6 +101,12 @@ public class SteeringBehavior : MonoBehaviour
     {
         return Random.value - Random.value;
     }
+
+
+    private Vector3 asVector(float _orientation)
+    {
+        return new Vector3(Mathf.Sin(_orientation), 0f, Mathf.Cos(_orientation));
+    }
     public SteeringOutput Wander()
     {
         if(startTime > wanderRate) {
@@ -108,8 +117,11 @@ public class SteeringBehavior : MonoBehaviour
         startTime += Time.deltaTime;
         DynamicAlign a = new DynamicAlign(agent.k, new Kinematic(), maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA);
         DynamicFace f = new DynamicFace(new Kinematic(), a);
-
-        return new DynamicWander(wanderOffset, wanderRadius, wanderRate, maxAcceleration, wanderOrientation, f).getSteering();
+        DynamicWander dw = new DynamicWander(wanderOffset, wanderRadius, wanderRate, maxAcceleration, wanderOrientation, f);
+        SteeringOutput so = dw.getSteering();
+        agent.DrawCircle(dw.targetPos, wanderRadius);
+        //agent.DrawLine(agent.k.position, asVector(wanderOrientation));
+        return so;
 
 
     }

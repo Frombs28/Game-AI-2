@@ -160,7 +160,7 @@ public class NPCController : MonoBehaviour
             case 8:
                 if (label)
                 {
-                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Dynamic Wander";
+                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Pursue with Arrive";
                 }
                 stopped = false;
                 //rotation = ai.Face(rotation, linear);

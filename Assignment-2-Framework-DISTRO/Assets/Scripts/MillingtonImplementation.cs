@@ -187,10 +187,10 @@ public class DynamicArrive {
         Vector3 direction = target.position - character.position;
         float distance = direction.magnitude;
 
-        if (distance < targetRadius)
+        if (distance < slowRadius)
         {
             Debug.Log("INSIDE!!!");
-            steering.linear = -character.velocity;
+            steering.linear = -3*character.velocity;
             //steering.linear = Vector3.zero;
             steering.angular = 0;
             return steering;
@@ -410,7 +410,7 @@ class DynamicWander {
     float wanderOrientation;
     float maxAcceleration;
     DynamicFace f;
-
+    public Vector3 targetPos;
     public DynamicWander(float _wanderOffset, float _wanderRadius, float _wanderRate,
                                  float _maxAcceleration, float _wanderOrientation, DynamicFace _f)
     {
@@ -439,6 +439,8 @@ class DynamicWander {
         f.target.position = f.a.character.position + wanderOffset * asVector(f.a.character.orientation);
 
         f.target.position += wanderRadius * asVector(targetOrientation);
+
+        targetPos = f.target.position;
 
         SteeringOutput steering = f.getSteering();
 
