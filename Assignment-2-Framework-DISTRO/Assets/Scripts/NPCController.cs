@@ -160,6 +160,17 @@ public class NPCController : MonoBehaviour
             case 8:
                 if (label)
                 {
+                    label.text = name.Replace("(Clone)", "") + "\nPursue with Obstacle Avoidance";
+                }
+                stopped = false;
+                //rotation = ai.Face(rotation, linear);
+                ai.SetTarget(target);
+                linear = ai.ObstacleAvoidance().linear;
+                angular = ai.ObstacleAvoidance().angular;
+                break;
+            case 9:
+                if (label)
+                {
                     label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Pursue with Arrive";
                 }
                 stopped = false;
@@ -167,18 +178,6 @@ public class NPCController : MonoBehaviour
                 ai.SetTarget(target);
                 linear = ai.PursueArrive().linear;
                 angular = ai.Face().angular;
-                break;
-
-            case 9:
-                if (label)
-                {
-                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Dynamic Wander";
-                }
-                stopped = false;
-                //rotation = ai.Face(rotation, linear);
-                ai.SetTarget(target);
-                linear = ai.ObstacleAvoidance().linear;
-                angular = ai.ObstacleAvoidance().angular;
                 break;
             case 10:
                 break;

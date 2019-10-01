@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 114185916214848506}
   - component: {fileID: 114403713985068348}
   - component: {fileID: 120447287367831728}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Wolf
   m_TagString: Wolf
   m_Icon: {fileID: 0}
@@ -130,7 +130,7 @@ MonoBehaviour:
   orientation: 0
   rotation: 0
   maxSpeed: 5
-  phase: 0
+  mapState: 0
   label: {fileID: 0}
 --- !u!114 &114403713985068348
 MonoBehaviour:
@@ -159,6 +159,7 @@ MonoBehaviour:
   wanderOffset: 5
   wanderRadius: 2
   wanderRate: 1
+  startTime: 0
   Path: []
   current: 0
 --- !u!120 &120447287367831728
@@ -268,7 +269,7 @@ GameObject:
   - component: {fileID: 33571998131710490}
   - component: {fileID: 23583633993152576}
   - component: {fileID: 65427516488141688}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
