@@ -47,6 +47,9 @@ public class SteeringBehavior : MonoBehaviour
     public GameObject[] Path;
     public int current = 0;
 
+    [SerializeField]
+    public List<NPCController> targets;
+
     protected void Start()
     {
         agent = GetComponent<NPCController>();
@@ -164,6 +167,13 @@ public class SteeringBehavior : MonoBehaviour
         SteeringOutput so = dofa.getSteering();
         agent.DrawLine(agent.k.position, dofa.targetPos);
         return so;
+    }
+
+    public SteeringOutput CollisionAvoidance() {
+        float radius = 1f;
+
+        return new DynamicCollisionAvoidance(agent.k, radius, targets, maxAcceleration).getSteering();
+        
     }
 
 
