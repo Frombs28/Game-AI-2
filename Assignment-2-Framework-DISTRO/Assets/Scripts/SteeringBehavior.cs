@@ -139,6 +139,7 @@ public class SteeringBehavior : MonoBehaviour
         return new DynamicAlign(agent.k, target.k, maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA).getSteering();
     }
 
+    // Pursue with Obstacle Avoidance and Arrival
     public SteeringOutput ObstacleAvoidance()
     {
         DynamicSeek s = new DynamicSeek(agent.k, target.k, maxAcceleration);
