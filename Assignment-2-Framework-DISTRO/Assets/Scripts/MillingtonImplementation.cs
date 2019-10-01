@@ -478,7 +478,7 @@ class DynamicObstacleAvoidance{
         Debug.Log(lookahead);
         // Does the ray intersect any objects excluding the player layer
         collisionDetector = new RaycastHit();
-        if (Physics.Raycast(s.character.position, rayVector, out collisionDetector, lookahead)) {
+        if (Physics.Raycast(s.character.position - Vector3.up * 0.5f, rayVector, out collisionDetector, lookahead)) {
             Debug.Log("HIT!");
 
             Debug.DrawRay(collisionDetector.point, collisionDetector.normal * avoidDistance, Color.red);
@@ -487,9 +487,9 @@ class DynamicObstacleAvoidance{
             return s.getSteering();
         }
         rayVector = Quaternion.AngleAxis(-30, Vector3.up) * rayVector;
-        Debug.DrawRay(s.character.position, rayVector, Color.cyan);
+        Debug.DrawRay(s.character.position - Vector3.up * 0.5f, rayVector, Color.cyan);
 
-        if (Physics.Raycast(s.character.position, rayVector, out collisionDetector, lookahead))
+        if (Physics.Raycast(s.character.position - Vector3.up * 0.5f, rayVector, out collisionDetector, lookahead))
         {
             Debug.Log("HIT!");
 
@@ -500,9 +500,9 @@ class DynamicObstacleAvoidance{
         }
 
         rayVector = Quaternion.AngleAxis(60, Vector3.up) * rayVector;
-        Debug.DrawRay(s.character.position, rayVector, Color.cyan);
+        Debug.DrawRay(s.character.position - Vector3.up * 0.5f, rayVector, Color.cyan);
 
-        if (Physics.Raycast(s.character.position, rayVector, out collisionDetector, lookahead))
+        if (Physics.Raycast(s.character.position - Vector3.up *0.5f, rayVector, out collisionDetector, lookahead))
         {
             Debug.Log("HIT!");
 
@@ -513,7 +513,7 @@ class DynamicObstacleAvoidance{
         }
 
         Debug.Log("Good");
-        Debug.DrawRay(s.character.position, s.character.velocity, Color.green);
+        Debug.DrawRay(s.character.position - Vector3.up * 0.5f, s.character.velocity, Color.green);
         return s.getSteering();
 
 
