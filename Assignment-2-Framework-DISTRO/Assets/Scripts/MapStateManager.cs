@@ -23,7 +23,6 @@ public class MapStateManager : MonoBehaviour {
     public GameObject WolfPrefab;       // Agent getting chased
     public GameObject RedPrefab;        // Red Riding Hood, or just "team red"
     public GameObject BluePrefab;       // "team blue"
-    public GameObject TreePrefab;       // New for Assignment #2
 
     public NPCController house;         // for future use
 
@@ -39,11 +38,8 @@ public class MapStateManager : MonoBehaviour {
     public Text SpawnText2;
     public GameObject spawner3;
     public Text SpawnText3;
-
-    public int TreeCount;
  
     private List<GameObject> spawnedNPCs;   // When you need to iterate over a number of agents.
-    private List<GameObject> trees;
 
     private int currentPhase = -1;           // This stores where in the "phases" the game is.
     private int previousPhase = -1;          // The "phases" we were just in
@@ -61,12 +57,6 @@ public class MapStateManager : MonoBehaviour {
 
     void Start() {
         narrator.text = "Here we see the Hunter, resting outdoors.";
-
-        TreeCount = 100;    // TreeCount isn't showing up in Inspector
-
-        trees = new List<GameObject>();
-        SpawnTrees(TreeCount);
-
         spawnedNPCs = new List<GameObject>();
         spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 0));
         StartCoroutine("NextPhase", 5.0f);
@@ -85,12 +75,6 @@ public class MapStateManager : MonoBehaviour {
         if (inputstring.Length > 0)
         {
             Debug.Log(inputstring);
-
-            if (inputstring[0] == 'R')
-            {
-                DestroyTrees();
-                SpawnTrees(50);
-            }
 
             // Look for a number key click
             if (inputstring.Length > 0)
@@ -190,17 +174,36 @@ public class MapStateManager : MonoBehaviour {
 
     private void EnterMapStateZero()
     {
-        narrator.text = "The Wolf appears. Most wolves are ferocious, but this one is docile.";
-        spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 0));
-        spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 7));
-        spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
-        spawnedNPCs[1].GetComponent<NPCController>().label.enabled = true;
-        StartCoroutine("NextPhase",15.0f);
+        narrator.text = "We begin our story in the woods, a place full of mystery and intrigue.";
+        StartCoroutine("NextPhase",5.0f);
     }
 
     private void EnterMapStateOne()
     {
-        narrator.text = "The Hunter spots the wolf and believes it is his target. The Wolf runs.";
+        narrator.text = "The Hunter wanders through the woods, expertly navigating its dense foliage.";
+        spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 0));
+        spawnedNPCs[0].GetComponent<NPCController>().mapState = 7;
+        spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
+        StartCoroutine("NextPhase", 25.0f);
+    }
+
+    private void EnterMapStateTwo()
+    {
+        narrator.text = "Likewise, the Big Bad Wolf moves through the forest like a predator, able to move quickly and precisely.";
+        spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 0));
+        spawnedNPCs[0].GetComponent<NPCController>().mapState = 7;
+        spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
+        //spawnedNPCs.Add(SpawnItem(spawner3, RedPrefab, null, SpawnText3, 0));
+        //spawnedNPCs[0].GetComponent<NPCController>().NewTarget(house);
+        //spawnedNPCs[0].GetComponent<NPCController>().mapState = 8;
+        //spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
+        //CreatePath();
+        StartCoroutine("NextPhase", 25.0f);
+    }
+
+    private void EnterMapStateThree() {
+        narrator.text = "The Hunter spots the Wolf walking through the woods, and "+
+                        "begins pursuing it, intent on hunting the Wolf so it cannot hurt anyone.";
         spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 0));
         spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 0));
         spawnedNPCs[0].GetComponent<NPCController>().NewTarget(spawnedNPCs[1].GetComponent<NPCController>());
@@ -209,30 +212,9 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs[1].GetComponent<NPCController>().mapState = 4;
         spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
         spawnedNPCs[1].GetComponent<NPCController>().label.enabled = true;
-        StartCoroutine("NextPhase", 25.0f);
-    }
-
-    private void EnterMapStateTwo()
-    {
-        narrator.text = "Both the Hunter and Wolf move to another area. Little Red arrives and moves to her house.";
-        spawnedNPCs.Add(SpawnItem(spawner3, RedPrefab, null, SpawnText3, 0));
-        spawnedNPCs[0].GetComponent<NPCController>().NewTarget(house);
-        spawnedNPCs[0].GetComponent<NPCController>().mapState = 8;
-        spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
-        CreatePath();
-        StartCoroutine("NextPhase", 40.0f);
-    }
-
-    private void EnterMapStateThree() {
-        narrator.text = "Little Red notices the Wolf and moves toward it.";
-        spawnedNPCs.Add(SpawnItem(spawner3, RedPrefab, null, SpawnText3, 0));
-        spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 0));
-        spawnedNPCs[0].GetComponent<NPCController>().NewTarget(spawnedNPCs[1].GetComponent<NPCController>());
-        spawnedNPCs[0].GetComponent<NPCController>().mapState = 8;
-        spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
         StartCoroutine("NextPhase", 15.0f);
     }
-
+    // $ PICK UP HERE. NEED A NEW WAY TO CHANGE SCENES BASED ON EXTERNAL TRIGGERS
     private void EnterMapStateFour()
     {
         narrator.text = "The Wolf looks for shelter, and spots little Red.";
@@ -314,50 +296,6 @@ public class MapStateManager : MonoBehaviour {
         temp.GetComponent<NPCController>().mapState = phase;
         Camera.main.GetComponent<CameraController>().player = temp;
         return temp;
-    }
-
-    /// <summary>
-    /// SpawnTrees will randomly place tree prefabs all over the map. The diameters
-    /// of the trees are also varied randomly.
-    /// 
-    /// Note that it isn't particularly smart about this (yet): notably, it doesn't
-    /// check first to see if there is something already there. This should get fixed.
-    /// </summary>
-    /// <param name="numTrees">desired number of trees</param>
-    private void SpawnTrees(int numTrees)
-    {
-        float MAX_X = 20;  // Size of the map; ideally, these shouldn't be hard coded
-        float MAX_Z = 25;
-        float less_X = MAX_X - 1;
-        float less_Z = MAX_Z - 1;
-
-        float diameter;
-
-        for (int i = 0; i < numTrees; i++)
-        {
-            //Vector3 size = spawner.transform.localScale;
-            Vector3 position = new Vector3(UnityEngine.Random.Range(-less_X, less_X), 0, UnityEngine.Random.Range(-less_Z, less_Z));
-            GameObject temp = Instantiate(TreePrefab, position, Quaternion.identity);
-
-            // diameter will be somewhere between .2 and .7 for both X and Z:
-            diameter = UnityEngine.Random.Range(0.2F, 0.7F);
-            temp.transform.localScale = new Vector3(diameter, 1.0F, diameter);
-
-            trees.Add(temp);
-          
-        }
-    }
-
-    private void DestroyTrees()
-    {
-        GameObject temp;
-        for (int i = 0; i < trees.Count; i++)
-        {
-            temp = trees[i];
-            Destroy(temp);
-        }
-        // Following this, write whatever methods you need that you can bolt together to 
-        // create more complex movement behaviors.
     }
 
     private void SetArrive(GameObject character) {
