@@ -86,6 +86,7 @@ public interface SteeringBehaviour
     Kinematic getTarget();
     void setTargetPosition(Vector3 newTargetPos);
     SteeringOutput getSteering();
+    bool isStuck();
 
 }
 
@@ -161,6 +162,13 @@ public class DynamicSeek : SteeringBehaviour
     public void setTargetPosition(Vector3 newTargetPos) {
         target.position = newTargetPos;
     }
+
+    public bool isStuck() {
+        if (Vector3.Dot(character.velocity.normalized, (target.position - character.position).normalized) < 0.8f) {
+            return true;
+        }
+        return false;
+    }
 }   
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Dynamic Flee
@@ -196,6 +204,15 @@ public class DynamicFlee : SteeringBehaviour
     public void setTargetPosition(Vector3 newTargetPos)
     {
         target.position = newTargetPos;
+    }
+
+    public bool isStuck()
+    {
+        if (Vector3.Dot(character.velocity.normalized, (character.position - target.position).normalized) < 0.8f)
+        {
+            return true;
+        }
+        return false;
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -270,6 +287,10 @@ public class DynamicArrive : SteeringBehaviour
     public void setTargetPosition(Vector3 newTargetPos)
     {
         target.position = newTargetPos;
+    }
+
+    public bool isStuck() {
+        return false;
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -353,6 +374,10 @@ public class DynamicAlign : SteeringBehaviour
     {
         target.position = newTargetPos;
     }
+    public bool isStuck()
+    {
+        return false;
+    }
 
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -405,6 +430,11 @@ class DynamicPursue : SteeringBehaviour
     public void setTargetPosition(Vector3 newTargetPos)
     {
         ds.setTargetPosition(newTargetPos);
+    }
+
+    public bool isStuck()
+    {
+        return ds.isStuck();
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -462,6 +492,11 @@ class DynamicEvade: SteeringBehaviour
     {
         target.position = newTargetPos;
     }
+
+    public bool isStuck()
+    {
+        return df.isStuck();
+    }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Dynamic Face
@@ -500,6 +535,10 @@ class DynamicFace : SteeringBehaviour
     public void setTargetPosition(Vector3 newTargetPos)
     {
         target.position = newTargetPos;
+    }
+    public bool isStuck()
+    {
+        return a.isStuck();
     }
 
 }
@@ -564,6 +603,11 @@ class DynamicWander : SteeringBehaviour
     public void setTargetPosition(Vector3 newTargetPos)
     {
         f.a.target.position = newTargetPos;
+    }
+
+    public bool isStuck()
+    {
+        return f.isStuck();
     }
 }
 // For this assignement we need:
@@ -646,6 +690,11 @@ class DynamicObstacleAvoidance: SteeringBehaviour
     public void setTargetPosition(Vector3 newTargetPos)
     {
         s.setTargetPosition(newTargetPos);
+    }
+
+    public bool isStuck()
+    {
+        return s.isStuck();
     }
 
 }
@@ -732,9 +781,9 @@ class PathFollowing : SteeringBehaviour
     float pathOffset;
     Transform currentParam;
 
-    public SteeringBehavior s;
+    public SteeringBehaviour s;
 
-    PathFollowing(List<Transform> _path, float _pathOffset, Transform _currentParam, SteeringBehavior _s) {
+    PathFollowing(List<Transform> _path, float _pathOffset, Transform _currentParam, SteeringBehaviour _s) {
         path = _path;
         pathOffset = _pathOffset;
         currentParam = _currentParam;
@@ -763,6 +812,11 @@ class PathFollowing : SteeringBehaviour
     public void setTargetPosition(Vector3 newTargetPos)
     {
         throw new System.NotImplementedException();
+    }
+
+    public bool isStuck()
+    {
+        return s.isStuck();
     }
 }
 

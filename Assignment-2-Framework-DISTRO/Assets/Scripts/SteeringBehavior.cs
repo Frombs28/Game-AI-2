@@ -177,7 +177,6 @@ public class SteeringBehavior : MonoBehaviour
         else {
             s = behaviourWhenNotAvoiding;
         }
-        DynamicPursue pa = new DynamicPursue(agent.k, currentTarget, maxAcceleration, maxPrediction);
 
 
         float dis = (agent.k.position - currentTarget.position).magnitude;
@@ -190,30 +189,38 @@ public class SteeringBehavior : MonoBehaviour
         //check if x is stagnant
 
         //check if it is heading in the direction of the target
-        if (Vector3.Dot(agent.k.velocity.normalized, (currentTarget.position - agent.k.position).normalized) < 0.8f)
+
+        if (s.isStuck())
         {
             stationaryTime += Time.deltaTime;
-            if (deltaPos.x < theta)
-            {
-                stationaryTime += Time.deltaTime;
-                stationaryTimeIncrimented = true;
-            }
-
-            //check for z
-            else if (deltaPos.z < theta)
-            {
-                if (!stationaryTimeIncrimented)
-                {
-                    stationaryTime += Time.deltaTime;
-                }
-            }
         }
         else {
             stationaryTime -= Time.deltaTime;
             stationaryTime = Mathf.Max(0, stationaryTime);
-            
-            //stationaryTime = 0;
         }
+        //if (Vector3.Dot(agent.k.velocity.normalized, (currentTarget.position - agent.k.position).normalized) < 0.8f)
+        //{
+            
+        //    if (deltaPos.x < theta)
+        //    {
+        //        stationaryTime += Time.deltaTime;
+        //        stationaryTimeIncrimented = true;
+        //    }
+
+        //    //check for z
+        //    else if (deltaPos.z < theta)
+        //    {
+        //        if (!stationaryTimeIncrimented)
+        //        {
+        //            stationaryTime += Time.deltaTime;
+        //        }
+        //    }
+        //}
+        //else {
+            
+            
+        //    //stationaryTime = 0;
+        //}
 
         Debug.Log(stationaryTime);
 
@@ -272,6 +279,7 @@ public class SteeringBehavior : MonoBehaviour
 
         return ObstacleAvoidance(dw);
     }
+
 
     public SteeringOutput CollisionAvoidance() {
 
