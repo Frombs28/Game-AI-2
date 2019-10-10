@@ -165,7 +165,7 @@ public class NPCController : MonoBehaviour
                 stopped = false;
                 //rotation = ai.Face(rotation, linear);
                 ai.SetTarget(target);
-                linear = ai.ObstacleAvoidance().linear;
+                linear = ai.ObstacleSeek().linear;
                 angular = ai.Face().angular;
                 break;
             case 9:
