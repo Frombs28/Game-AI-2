@@ -143,21 +143,112 @@ public class SteeringBehavior : MonoBehaviour
     }
 
     // Pursue with Obstacle Avoidance and Arrival
+
+    private float stationaryTime = 0f;
+    float theta = 0.005f;
+    private Vector3 deltaPos = Vector3.zero;
+    private Vector3 lastFramePos = Vector3.zero;
+    bool stationaryTimeIncrimented = false;
+    bool seekingUnstuckPoint = false;
+    Kinematic unstuckTarget = new Kinematic();
+
     public SteeringOutput ObstacleAvoidance()
     {
-        DynamicSeek s = new DynamicSeek(agent.k, target.k, maxAcceleration);
-        //PursueArrive pa = new PursueArrive()
-        float dis = (agent.k.position - target.k.position).magnitude;
+        Kinematic currentTarget = target.k;
+        stationaryTimeIncrimented = false;
+
+        if (stationaryTime > 1f) {
+            seekingUnstuckPoint = true;
+            stationaryTime = 0f;
+            //unstuckTarget.position = agent.k.position - (Quaternion.Euler(0f, Random.Range(0,360f), 0f) * Vector3.forward)*15f;
+            unstuckTarget.position = agent.k.position + getEscapeVector(agent.k.position, 40).normalized * 20f;
+        }
+
+        if (seekingUnstuckPoint)
+        {
+            currentTarget = unstuckTarget;
+            if ((agent.k.position - unstuckTarget.position).magnitude <= slowRadiusL) {
+                seekingUnstuckPoint = false;
+            }
+        }
+        Debug.Log("current target: " + currentTarget.position);
+        DynamicSeek s = new DynamicSeek(agent.k, currentTarget, maxAcceleration);
+        DynamicPursue pa = new DynamicPursue(agent.k, currentTarget, maxAcceleration, maxPrediction);
+
+
+        float dis = (agent.k.position - currentTarget.position).magnitude;
         if (dis <= slowRadiusL)
         {
             return Arrive();
         }
         //DynamicPursue dp = new DynamicPursue(agent.k, target.k, maxAcceleration, maxPrediction);
+        deltaPos = lastFramePos - agent.k.position;
+        //check if x is stagnant
 
-        DynamicObstacleAvoidance doa = new DynamicObstacleAvoidance(5f, 5f, s);
+        //check if it is heading in the direction of the target
+        if (Vector3.Dot(agent.k.velocity.normalized, (currentTarget.position - agent.k.position).normalized) < 0.8f)
+        {
+            //if (deltaPos.magnitude < theta) {
+            //    stationaryTime += Time.deltaTime;
+            //}
+
+            if (deltaPos.x < theta)
+            {
+                stationaryTime += Time.deltaTime;
+                stationaryTimeIncrimented = true;
+            }
+
+            //check for z
+            else if (deltaPos.z < theta)
+            {
+                if (!stationaryTimeIncrimented)
+                {
+                    stationaryTime += Time.deltaTime;
+                }
+            }
+            else
+            {
+                stationaryTime = 0;
+            }
+        }
+        else {
+            stationaryTime -= Time.deltaTime;
+            stationaryTime = Mathf.Max(0, stationaryTime);
+            
+            //stationaryTime = 0;
+        }
+
+        Debug.Log(stationaryTime);
+
+
+        DynamicObstacleAvoidance doa = new DynamicObstacleAvoidance(3f, 3f, s);
         SteeringOutput so = doa.getSteering();
         agent.DrawLine(agent.k.position,doa.targetPos);
+
+        lastFramePos = agent.k.position;
         return so;
+    }
+
+    public Vector3 getEscapeVector(Vector3 pos, int rays) {
+        Vector3 returnVector = pos;
+        float increment = 360f / rays;
+        RaycastHit hit;
+        for (int i = 0; i < rays; i++) {
+
+            if (Physics.Raycast(pos, Quaternion.Euler(0f, (increment * i), 0f) * Vector3.forward, out hit, Mathf.Infinity)) {
+                if ((hit.point - pos).magnitude > returnVector.magnitude) {
+                    returnVector = (hit.point - pos);
+                }
+            }
+            //didn't hit anything
+            else {
+                return Quaternion.Euler(0f, (increment * i), 0f) * Vector3.forward;
+            }
+            
+        }
+
+        return returnVector;
+
     }
 
     public SteeringOutput ObstacleFlee()

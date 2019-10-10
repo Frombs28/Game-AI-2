@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class simonDebugScript : MonoBehaviour
 {
-
+    //1 - seek
+    //2 - flee
+    //4 - obstacle flee
+    //8 - ObstacleAvoidance w/ seek
     public NPCController hunter;
     public NPCController wolf;
     // Start is called before the first frame update
@@ -14,8 +17,8 @@ public class simonDebugScript : MonoBehaviour
             Debug.Log("wolf and hunter do not exist");
             return;
         }
-        hunter.mapState = 4;
-        wolf.mapState = 1;
+        hunter.mapState = 8;
+        wolf.mapState = 4;
         //dumb but sets the new target in NPC Controller script
         hunter.GetComponent<NPCController>().NewTarget(wolf);
         wolf.GetComponent<NPCController>().NewTarget(hunter);
