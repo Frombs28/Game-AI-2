@@ -724,7 +724,50 @@ class DynamicCollisionAvoidance {
 }
 
 
-class Pathfinding { 
+class PathFollowing : SteeringBehaviour
+{
 
-    
+    public List<Transform> path;
+
+    float pathOffset;
+    Transform currentParam;
+
+    public SteeringBehavior s;
+
+    PathFollowing(List<Transform> _path, float _pathOffset, Transform _currentParam, SteeringBehavior _s) {
+        path = _path;
+        pathOffset = _pathOffset;
+        currentParam = _currentParam;
+        s = _s;
+
+    }
+
+    public SteeringOutput getSteering() {
+
+
+
+        return new SteeringOutput();
+    }
+
+
+    public Kinematic getCharacter()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Kinematic getTarget()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void setTargetPosition(Vector3 newTargetPos)
+    {
+        throw new System.NotImplementedException();
+    }
+}
+
+class Path {
+
+    List<Transform> nodeList;
+
 }
