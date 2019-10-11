@@ -201,7 +201,7 @@ public class SteeringBehavior : MonoBehaviour
             seekingUnstuckPoint = true;
             stationaryTime = 0f;
             //unstuckTarget.position = agent.k.position - (Quaternion.Euler(0f, Random.Range(0,360f), 0f) * Vector3.forward)*15f;
-            unstuckTarget.position = agent.k.position + getEscapeVector(agent.k.position, 20).normalized * 20f;
+            unstuckTarget.position = agent.k.position + getEscapeVector(agent.k.position, 20).normalized * 10f;
         }
 
         SteeringBehaviour s;

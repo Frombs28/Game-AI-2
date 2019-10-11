@@ -293,7 +293,7 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 9;
         spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
         CreatePath();
-        StartCoroutine("NextPhase", 15.0f);
+        StartCoroutine("NextPhase", 10.0f);
     }
 
     // Scene 5: Triggered by time. Wolf appears and pursues Red until he catches her. Then, they stand still, before the Wolf
@@ -304,7 +304,7 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs.Add(SpawnItem(spawns[6], RedPrefab, house, SpawnText3, 0));
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 9;
         spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
-        spawnedNPCs[0].GetComponent<SteeringBehavior>().current = 4;
+        spawnedNPCs[0].GetComponent<SteeringBehavior>().current = 3;
         CreatePath();
         spawnedNPCs.Add(SpawnItem(spawns[7], WolfPrefab, null, SpawnText2, 0));
         spawnedNPCs[1].GetComponent<NPCController>().NewTarget(spawnedNPCs[0].GetComponent<NPCController>());
