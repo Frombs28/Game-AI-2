@@ -44,7 +44,7 @@ public class SteeringBehavior : MonoBehaviour
     public float startTime;
 
     // Holds the path to follow
-    public GameObject[] Path;
+    public GameObject[] path;
     public int current = 0;
 
     [SerializeField]
@@ -52,6 +52,7 @@ public class SteeringBehavior : MonoBehaviour
 
     protected void Start()
     {
+
         agent = GetComponent<NPCController>();
     }
 
@@ -223,7 +224,6 @@ public class SteeringBehavior : MonoBehaviour
         //    //stationaryTime = 0;
         //}
 
-        Debug.Log(stationaryTime);
 
 
         DynamicObstacleAvoidance doa = new DynamicObstacleAvoidance(3f, 2f, s, maxAcceleration);
@@ -289,6 +289,16 @@ public class SteeringBehavior : MonoBehaviour
         so.linear = ObstacleSeek().linear + dca.linear;
         so.angular = ObstacleSeek().angular + dca.angular;
         return so;
+    }
+
+    
+    public SteeringOutput PathFollowing() {
+        Path p = new Path(path);
+        Transform currentNode = path[current].transform;
+        DynamicSeek s = new DynamicSeek(agent.k, target.k, maxAcceleration);
+        DynamicPathFollowing pf = new DynamicPathFollowing(p, 10f, path[current].transform, s);
+        pf.path.getClosestPointOnPath(path[current].transform, path[current + 1].transform, agent.k.position);
+        return new SteeringOutput();
     }
 
 

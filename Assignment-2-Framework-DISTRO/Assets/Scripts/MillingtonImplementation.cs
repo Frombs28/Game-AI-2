@@ -768,17 +768,17 @@ class DynamicCollisionAvoidance {
 }
 
 
-class PathFollowing : SteeringBehaviour
+class DynamicPathFollowing : SteeringBehaviour
 {
 
-    public List<Transform> path;
+    public Path path;
 
     float pathOffset;
     Transform currentParam;
 
     public SteeringBehaviour s;
 
-    PathFollowing(List<Transform> _path, float _pathOffset, Transform _currentParam, SteeringBehaviour _s) {
+    public DynamicPathFollowing(Path _path, float _pathOffset, Transform _currentParam, SteeringBehaviour _s) {
         path = _path;
         pathOffset = _pathOffset;
         currentParam = _currentParam;
@@ -789,7 +789,7 @@ class PathFollowing : SteeringBehaviour
     public SteeringOutput getSteering() {
 
 
-
+        path.getClosestPointOnPath(path.nodeList[0].transform, path.nodeList[1].transform, s.getCharacter().position);
         return new SteeringOutput();
     }
 
@@ -817,6 +817,31 @@ class PathFollowing : SteeringBehaviour
 
 class Path {
 
-    List<Transform> nodeList;
+    public GameObject[] nodeList;
+
+    public Path(GameObject[] _nodeList) {
+        nodeList = _nodeList;
+    }
+    public Vector3 getClosestPointOnPath(Transform pointA, Transform pointB, Vector3 pos) {
+        Vector3 pointAToTar = pointA.position - pos;
+        Vector3 pointBToTar = pointB.position - pos;
+
+
+        //base case if it isn't between the two nodes
+        if (Vector3.Dot(pointAToTar, pointBToTar) > 0f) {
+            if (pointAToTar.magnitude > pointBToTar.magnitude) {
+                return pointA.position;
+            }
+            return pointB.position;
+        }
+
+        Vector3 pointAToPointB = pointA.position - pointB.position;
+        Vector3 orth = Quaternion.Euler(0f, 90f, 0f) * pointAToPointB;
+        Debug.DrawRay(pos, orth, Color.green);
+        if (Input.GetKeyDown(KeyCode.D)) {
+            Debug.Log("Dot prod: " + Vector3.Dot(pointAToTar, pointBToTar));
+        }
+        return Vector3.zero;
+    }
 
 }

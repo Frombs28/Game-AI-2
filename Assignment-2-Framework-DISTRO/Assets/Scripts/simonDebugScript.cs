@@ -17,7 +17,7 @@ public class simonDebugScript : MonoBehaviour
             Debug.Log("wolf and hunter do not exist");
             return;
         }
-        hunter.mapState = 7;
+        hunter.mapState = 12;
         wolf.mapState = 4;
         //dumb but sets the new target in NPC Controller script
         hunter.GetComponent<NPCController>().NewTarget(wolf);

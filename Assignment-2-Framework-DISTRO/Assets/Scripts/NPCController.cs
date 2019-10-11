@@ -194,6 +194,18 @@ public class NPCController : MonoBehaviour
                 linear = ai.CollisionAvoidance().linear;
                 angular = ai.Face().angular;
                 break;
+            case 12:
+                if (label)
+                {
+                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Seek with Collision Avoidance";
+                }
+                stopped = false;
+                //rotation = ai.Face(rotation, linear);
+                ai.SetTarget(target);
+                SteeringOutput so = ai.PathFollowing();
+                linear = so.linear;
+                angular = so.angular;
+                break;
         }
         if(mapState == 10)
         {
