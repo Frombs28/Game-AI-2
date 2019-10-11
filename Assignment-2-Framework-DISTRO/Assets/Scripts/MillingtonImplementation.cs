@@ -86,6 +86,7 @@ public interface SteeringBehaviour
     Kinematic getTarget();
     void setTargetPosition(Vector3 newTargetPos);
     SteeringOutput getSteering();
+    bool isStuck();
 
 }
 
@@ -161,6 +162,13 @@ public class DynamicSeek : SteeringBehaviour
     public void setTargetPosition(Vector3 newTargetPos) {
         target.position = newTargetPos;
     }
+
+    public bool isStuck() {
+        if (Vector3.Dot(character.velocity.normalized, (target.position - character.position).normalized) < 0.8f) {
+            return true;
+        }
+        return false;
+    }
 }   
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Dynamic Flee
@@ -196,6 +204,15 @@ public class DynamicFlee : SteeringBehaviour
     public void setTargetPosition(Vector3 newTargetPos)
     {
         target.position = newTargetPos;
+    }
+
+    public bool isStuck()
+    {
+        if (Vector3.Dot(character.velocity.normalized, (character.position - target.position).normalized) < 0.8f)
+        {
+            return true;
+        }
+        return false;
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -270,6 +287,10 @@ public class DynamicArrive : SteeringBehaviour
     public void setTargetPosition(Vector3 newTargetPos)
     {
         target.position = newTargetPos;
+    }
+
+    public bool isStuck() {
+        return false;
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -353,6 +374,10 @@ public class DynamicAlign : SteeringBehaviour
     {
         target.position = newTargetPos;
     }
+    public bool isStuck()
+    {
+        return false;
+    }
 
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -405,6 +430,11 @@ class DynamicPursue : SteeringBehaviour
     public void setTargetPosition(Vector3 newTargetPos)
     {
         ds.setTargetPosition(newTargetPos);
+    }
+
+    public bool isStuck()
+    {
+        return ds.isStuck();
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -462,6 +492,11 @@ class DynamicEvade: SteeringBehaviour
     {
         target.position = newTargetPos;
     }
+
+    public bool isStuck()
+    {
+        return df.isStuck();
+    }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Dynamic Face
@@ -501,6 +536,10 @@ class DynamicFace : SteeringBehaviour
     {
         target.position = newTargetPos;
     }
+    public bool isStuck()
+    {
+        return a.isStuck();
+    }
 
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -512,17 +551,17 @@ class DynamicWander : SteeringBehaviour
     float wanderRate;
     float wanderOrientation;
     float maxAcceleration;
-    public DynamicFace f;
     public Vector3 targetPos;
+    DynamicSeek ds;
     public DynamicWander(float _wanderOffset, float _wanderRadius, float _wanderRate,
-                                 float _maxAcceleration, float _wanderOrientation, DynamicFace _f)
+                                 float _maxAcceleration, float _wanderOrientation, DynamicSeek _ds)
     {
         wanderOffset = _wanderOffset;
         wanderRadius = _wanderRadius;
         wanderRate = _wanderRate;
         maxAcceleration = _maxAcceleration;
         wanderOrientation = _wanderOrientation;
-        f = _f;
+        ds = _ds;
         //wanderOrientation = f.a.character.orientation;
     }
     private float randomBinomial() {
@@ -536,34 +575,34 @@ class DynamicWander : SteeringBehaviour
     public SteeringOutput getSteering() {
 
 
-        //using face, which is using align which has the characyer;
-        float targetOrientation = wanderOrientation + f.a.character.orientation;
+        Vector3 centerOfCircle = getCharacter().position + getCharacter().velocity.normalized * wanderOffset;
+        Vector2 randomPoint = Random.insideUnitCircle.normalized;
+        Vector3 target = centerOfCircle + new Vector3(randomPoint.x, 0f, randomPoint.y)*wanderRadius;
+        Debug.DrawLine(centerOfCircle, target, Color.blue);
+        Kinematic targetK = new Kinematic
+        {
+            position = target
+        };
 
-        f.target.position = f.a.character.position + wanderOffset * asVector(f.a.character.orientation);
-
-        f.target.position += wanderRadius * asVector(targetOrientation);
-
-        targetPos = f.target.position;
-
-        SteeringOutput steering = f.getSteering();
-
-        steering.linear = maxAcceleration * asVector(f.a.character.orientation);
-        //Debug.DrawRay(f.a.character.position, asVector(f.a.character.orientation)* maxAcceleration, Color.blue);
-        //Debug.Log("wander linear = " + steering.linear);
-
-        return steering;
+        ds.target = targetK;
+        return ds.getSteering();
     }
     public Kinematic getCharacter()
     {
-        return f.a.character;
+        return ds.character;
     }
     public Kinematic getTarget()
     {
-        return f.a.target;
+        return ds.target;
     }
     public void setTargetPosition(Vector3 newTargetPos)
     {
-        f.a.target.position = newTargetPos;
+        ds.target.position = newTargetPos;
+    }
+
+    public bool isStuck()
+    {
+        return ds.character.velocity.magnitude<0.8f;
     }
 }
 // For this assignement we need:
@@ -648,6 +687,11 @@ class DynamicObstacleAvoidance: SteeringBehaviour
         s.setTargetPosition(newTargetPos);
     }
 
+    public bool isStuck()
+    {
+        return s.isStuck();
+    }
+
 }
 
 
@@ -724,7 +768,80 @@ class DynamicCollisionAvoidance {
 }
 
 
-class Pathfinding { 
+class DynamicPathFollowing : SteeringBehaviour
+{
 
-    
+    public Path path;
+
+    float pathOffset;
+    Transform currentParam;
+
+    public SteeringBehaviour s;
+
+    public DynamicPathFollowing(Path _path, float _pathOffset, Transform _currentParam, SteeringBehaviour _s) {
+        path = _path;
+        pathOffset = _pathOffset;
+        currentParam = _currentParam;
+        s = _s;
+
+    }
+
+    public SteeringOutput getSteering() {
+
+
+        path.getClosestPointOnPath(path.nodeList[0].transform, path.nodeList[1].transform, s.getCharacter().position);
+        return new SteeringOutput();
+    }
+
+
+    public Kinematic getCharacter()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Kinematic getTarget()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void setTargetPosition(Vector3 newTargetPos)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public bool isStuck()
+    {
+        return s.isStuck();
+    }
+}
+
+class Path {
+
+    public GameObject[] nodeList;
+
+    public Path(GameObject[] _nodeList) {
+        nodeList = _nodeList;
+    }
+    public Vector3 getClosestPointOnPath(Transform pointA, Transform pointB, Vector3 pos) {
+        Vector3 pointAToTar = pointA.position - pos;
+        Vector3 pointBToTar = pointB.position - pos;
+
+
+        //base case if it isn't between the two nodes
+        if (Vector3.Dot(pointAToTar, pointBToTar) > 0f) {
+            if (pointAToTar.magnitude > pointBToTar.magnitude) {
+                return pointA.position;
+            }
+            return pointB.position;
+        }
+
+        Vector3 pointAToPointB = pointA.position - pointB.position;
+        Vector3 orth = Quaternion.Euler(0f, 90f, 0f) * pointAToPointB;
+        Debug.DrawRay(pos, orth, Color.green);
+        if (Input.GetKeyDown(KeyCode.D)) {
+            Debug.Log("Dot prod: " + Vector3.Dot(pointAToTar, pointBToTar));
+        }
+        return Vector3.zero;
+    }
+
 }

@@ -161,6 +161,7 @@ public class NPCController : MonoBehaviour
                 stopped = false;
                 linear = ai.ObstacleWander().linear;
                 angular = ai.ObstacleWander().angular;
+
                 break;
 
             case 8:
@@ -187,7 +188,17 @@ public class NPCController : MonoBehaviour
                 break;
             case 10:
                 break;
-                
+            case 11:
+                if (label)
+                {
+                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Seek with Collision Avoidance";
+                }
+                stopped = false;
+                //rotation = ai.Face(rotation, linear);
+                ai.SetTarget(target);
+                linear = ai.CollisionAvoidance().linear;
+                angular = ai.Face().angular;
+                break;
         }
         if(mapState == 10)
         {
