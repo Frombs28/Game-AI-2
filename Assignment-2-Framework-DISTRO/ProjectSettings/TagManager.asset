@@ -8,6 +8,7 @@ TagManager:
   - Hunter
   - Red
   - Spawner
+  - House
   layers:
   - Default
   - TransparentFX

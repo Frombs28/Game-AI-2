@@ -9,6 +9,8 @@ public class NPCController : MonoBehaviour
     private SteeringBehavior ai;    // Put all the brains for steering in its own module
     private Rigidbody rb;           // You'll need this for dynamic steering
 
+    MapStateManager msm;            // Used to send messages for when this NPC catches its target
+
     private NPCController target;
 
     // For speed 
@@ -77,16 +79,16 @@ public class NPCController : MonoBehaviour
                 linear = Vector3.zero;
                 angular = 0;
                 break;
-            case 1:
 
+            case 1:
                 //dynamic seek
                 if (label)
                 {
-                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Dynamic Seek";
+                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Dynamic Seek with Obstacle Avoidance";
                 }
                 stopped = false;
                 ai.SetTarget(target);
-                linear = ai.Seek().linear;
+                linear = ai.ObstacleSeek().linear;
                 angular = ai.Face().angular;
                 DrawLine(gameObject.transform.position, target.gameObject.transform.position);
                 break;
@@ -94,11 +96,11 @@ public class NPCController : MonoBehaviour
             case 2:
                 if (label)
                 {
-                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Dynamic Flee";
+                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Dynamic Flee with Obstacle Avoidance";
                 }
                 stopped = false;
                 ai.SetTarget(target);
-                linear = ai.Flee().linear;
+                linear = ai.ObstacleFlee().linear;
                 angular = ai.Face().angular;
                 DrawLine(gameObject.transform.position, target.gameObject.transform.position);
                 break;
@@ -106,13 +108,13 @@ public class NPCController : MonoBehaviour
             case 3:
                 if (label)
                 {
-                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Pursue";
+                    label.text = name.Replace("(Clone)", "") + "\nPursue with Arrive with Obstacle Avoidance";
                 }
                 stopped = false;
+                //rotation = ai.Face(rotation, linear);
                 ai.SetTarget(target);
-                linear = ai.Pursue().linear;
+                linear = ai.ObstacleSeek().linear;
                 angular = ai.Face().angular;
-                
                 break;
 
             case 4:
@@ -125,6 +127,7 @@ public class NPCController : MonoBehaviour
                 linear = ai.ObstacleFlee().linear;
                 angular = ai.Face().angular;
                 break;
+
             case 5:
                 if (label)
                 {
@@ -132,11 +135,10 @@ public class NPCController : MonoBehaviour
                 }
                 stopped = false;
                 ai.SetTarget(target);
-                linear = ai.Seek().linear;
-                angular = ai.Face().angular;
-
-
+                linear = ai.ObstacleSeek().linear;
+                angular = ai.Align().angular;
                 break;
+
             case 6:
                 if (label)
                 {
@@ -144,44 +146,21 @@ public class NPCController : MonoBehaviour
                 }
                 stopped = false;
                 ai.SetTarget(target);
-                linear = ai.Seek().linear;
+                linear = ai.ObstacleSeek().linear;
                 angular = ai.Face().angular;
-
                 break;
+
             case 7:
                 if (label)
                 {
                     label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Dynamic Wander";
                 }
                 stopped = false;
-                linear = ai.Wander().linear;
-                angular = ai.Wander().angular;
+                linear = ai.ObstacleWander().linear;
+                angular = ai.ObstacleWander().angular;
                 break;
+
             case 8:
-                if (label)
-                {
-                    label.text = name.Replace("(Clone)", "") + "\nPursue with Obstacle Avoidance";
-                }
-                stopped = false;
-                //rotation = ai.Face(rotation, linear);
-                ai.SetTarget(target);
-                linear = ai.ObstacleSeek().linear;
-                angular = ai.Face().angular;
-                break;
-            case 9:
-                if (label)
-                {
-                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Pursue with Arrive";
-                }
-                stopped = false;
-                //rotation = ai.Face(rotation, linear);
-                ai.SetTarget(target);
-                linear = ai.PursueArrive().linear;
-                angular = ai.Face().angular;
-                break;
-            case 10:
-                break;
-            case 11:
                 if (label)
                 {
                     label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Seek with Collision Avoidance";
@@ -192,6 +171,10 @@ public class NPCController : MonoBehaviour
                 linear = ai.CollisionAvoidance().linear;
                 angular = ai.Face().angular;
                 break;
+
+            case 10:
+                break;
+                
         }
         if(mapState == 10)
         {
@@ -303,6 +286,18 @@ public class NPCController : MonoBehaviour
         line.useWorldSpace = true;
         line.SetPosition(0, myPos);
         line.SetPosition(1, position);
+    }
+
+    public void CaughtTarget()
+    {
+        if(target.gameObject.tag == "House")
+        {
+            msm.ReachedHouse();
+        }
+        else
+        {
+            msm.CaughtCharacter();
+        }
     }
 
     /// <summary>

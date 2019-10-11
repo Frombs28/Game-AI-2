@@ -59,7 +59,7 @@ public class SteeringBehavior : MonoBehaviour
     {
         target = newTarget;
     }
-
+    /*
     public SteeringOutput Seek()
     {
         return new DynamicSeek(agent.k, target.k, maxAcceleration).getSteering();
@@ -76,12 +76,13 @@ public class SteeringBehavior : MonoBehaviour
         agent.DrawCircle(dp.predictPos, targetRadiusL);
         return so;
     }
-
+    */
     public SteeringOutput Arrive()
     {
         DynamicArrive da = new DynamicArrive(agent.k, target.k, maxAcceleration, maxSpeed, targetRadiusL, slowRadiusL);
         agent.DrawCircle(target.k.position, slowRadiusL);
         SteeringOutput so = da.getSteering();
+        agent.CaughtTarget();
         return so;
     }
 
@@ -94,6 +95,7 @@ public class SteeringBehavior : MonoBehaviour
         agent.DrawCircle(dp.predictPos, targetRadiusL);
         return dp.getSteering();
     }
+    /*
     public SteeringOutput Evade()
     {
         DynamicEvade de = new DynamicEvade(agent.k, target.k, maxAcceleration, maxPrediction);
@@ -101,6 +103,7 @@ public class SteeringBehavior : MonoBehaviour
         agent.DrawCircle(de.predictPos, targetRadiusL);
         return so;
     }
+    */
     private float randomBinomial()
     {
         return Random.value - Random.value;
@@ -111,6 +114,8 @@ public class SteeringBehavior : MonoBehaviour
     {
         return new Vector3(Mathf.Sin(_orientation), 0f, Mathf.Cos(_orientation));
     }
+
+    /*
     public SteeringOutput Wander()
     {
         if(startTime > wanderRate) {
@@ -129,6 +134,7 @@ public class SteeringBehavior : MonoBehaviour
 
 
     }
+    */
 
     public SteeringOutput Face()
     {
