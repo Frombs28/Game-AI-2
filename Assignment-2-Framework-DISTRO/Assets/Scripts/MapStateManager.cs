@@ -375,7 +375,7 @@ public class MapStateManager : MonoBehaviour {
     private GameObject SpawnItem(GameObject spawner, GameObject spawnPrefab, NPCController target, Text spawnText, int phase)
     {
         Vector3 size = spawner.transform.localScale;
-        Vector3 position = spawner.transform.position + new Vector3(UnityEngine.Random.Range(-size.x / 2, size.x / 2), 0, UnityEngine.Random.Range(-size.z / 2, size.z / 2));
+        Vector3 position = spawner.transform.position;
         GameObject temp = Instantiate(spawnPrefab, position, Quaternion.identity);
         if (target)
         {

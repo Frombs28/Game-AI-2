@@ -4,11 +4,16 @@ using UnityEngine;
 
 public class TriggerSight : MonoBehaviour
 {
+    // This goes on the hunter, and is used to start phase 3.
+
     NPCController thisObject;
+    MapStateManager msm;
+    bool found = false;
     // Start is called before the first frame update
     void Start()
     {
         thisObject = transform.parent.gameObject.GetComponent<NPCController>();
+        msm = FindObjectOfType<MapStateManager>();
     }
 
     // Update is called once per frame
@@ -19,9 +24,10 @@ public class TriggerSight : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "Red" || other.gameObject.tag == "Wolf" || other.gameObject.tag == "Hunter" || other.gameObject.tag == "House")
+        if(other.gameObject.tag == "Wolf" && !found)
         {
-
+            msm.Sight();
+            found = true;
         }
     }
 }
