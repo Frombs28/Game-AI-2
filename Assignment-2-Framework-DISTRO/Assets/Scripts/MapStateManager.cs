@@ -254,7 +254,8 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs.Add(SpawnItem(spawns[0], HunterPrefab, null, SpawnText1, 0));
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 7;
         spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
-        StartCoroutine("NextPhase", 25.0f);
+        spawnedNPCs[0].GetComponent<NPCController>().NewTarget(house);
+        StartCoroutine("NextPhase", 15.0f);
     }
 
     // Scene 2: Triggered by time. Wolf appears and wanders randomly. Hunter should still be wandering.
@@ -264,9 +265,11 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs.Add(SpawnItem(spawns[1], HunterPrefab, null, SpawnText1, 0));
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 7;
         spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
+        spawnedNPCs[0].GetComponent<NPCController>().NewTarget(house);
         spawnedNPCs.Add(SpawnItem(spawns[2], WolfPrefab, null, SpawnText2, 0));
         spawnedNPCs[1].GetComponent<NPCController>().mapState = 7;
         spawnedNPCs[1].GetComponent<NPCController>().label.enabled = true;
+        spawnedNPCs[1].GetComponent<NPCController>().NewTarget(house);
     }
 
     // Scene 3: Triggered when the Hunter and Wolf get too close. The Hunter chases the Wolf.
