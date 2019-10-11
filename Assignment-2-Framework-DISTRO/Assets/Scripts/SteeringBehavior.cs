@@ -58,6 +58,9 @@ public class SteeringBehavior : MonoBehaviour
 
         agent = GetComponent<NPCController>();
         pathsManager = GameObject.FindGameObjectWithTag("Paths");
+        if (!pathsManager) {
+            return;
+        }
         foreach(Transform child in pathsManager.transform)
         {
             Path.Add(child.gameObject);
