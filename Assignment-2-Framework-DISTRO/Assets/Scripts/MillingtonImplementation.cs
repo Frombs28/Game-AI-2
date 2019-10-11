@@ -551,17 +551,17 @@ class DynamicWander : SteeringBehaviour
     float wanderRate;
     float wanderOrientation;
     float maxAcceleration;
-    public DynamicFace f;
     public Vector3 targetPos;
+    DynamicSeek ds;
     public DynamicWander(float _wanderOffset, float _wanderRadius, float _wanderRate,
-                                 float _maxAcceleration, float _wanderOrientation, DynamicFace _f)
+                                 float _maxAcceleration, float _wanderOrientation, DynamicSeek _ds)
     {
         wanderOffset = _wanderOffset;
         wanderRadius = _wanderRadius;
         wanderRate = _wanderRate;
         maxAcceleration = _maxAcceleration;
         wanderOrientation = _wanderOrientation;
-        f = _f;
+        ds = _ds;
         //wanderOrientation = f.a.character.orientation;
     }
     private float randomBinomial() {
@@ -575,39 +575,34 @@ class DynamicWander : SteeringBehaviour
     public SteeringOutput getSteering() {
 
 
-        //using face, which is using align which has the characyer;
-        float targetOrientation = wanderOrientation + f.a.character.orientation;
+        Vector3 centerOfCircle = getCharacter().position + getCharacter().velocity.normalized * wanderOffset;
+        Vector2 randomPoint = Random.insideUnitCircle.normalized;
+        Vector3 target = centerOfCircle + new Vector3(randomPoint.x, 0f, randomPoint.y)*wanderRadius;
+        Debug.DrawLine(centerOfCircle, target, Color.blue);
+        Kinematic targetK = new Kinematic
+        {
+            position = target
+        };
 
-        f.target.position = f.a.character.position + wanderOffset * asVector(f.a.character.orientation);
-
-        f.target.position += wanderRadius * asVector(targetOrientation);
-
-        targetPos = f.target.position;
-
-        SteeringOutput steering = f.getSteering();
-
-        steering.linear = maxAcceleration * asVector(f.a.character.orientation);
-        //Debug.DrawRay(f.a.character.position, asVector(f.a.character.orientation)* maxAcceleration, Color.blue);
-        //Debug.Log("wander linear = " + steering.linear);
-
-        return steering;
+        ds.target = targetK;
+        return ds.getSteering();
     }
     public Kinematic getCharacter()
     {
-        return f.a.character;
+        return ds.character;
     }
     public Kinematic getTarget()
     {
-        return f.a.target;
+        return ds.target;
     }
     public void setTargetPosition(Vector3 newTargetPos)
     {
-        f.a.target.position = newTargetPos;
+        ds.target.position = newTargetPos;
     }
 
     public bool isStuck()
     {
-        return f.isStuck();
+        return ds.character.velocity.magnitude<0.8f;
     }
 }
 // For this assignement we need:

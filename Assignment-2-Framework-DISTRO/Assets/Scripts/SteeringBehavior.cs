@@ -121,7 +121,8 @@ public class SteeringBehavior : MonoBehaviour
         startTime += Time.deltaTime;
         DynamicAlign a = new DynamicAlign(agent.k, new Kinematic(), maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA);
         DynamicFace f = new DynamicFace(new Kinematic(), a);
-        DynamicWander dw = new DynamicWander(wanderOffset, wanderRadius, wanderRate, maxAcceleration, wanderOrientation, f);
+        DynamicSeek ds = new DynamicSeek(agent.k, new Kinematic(), maxAcceleration);
+        DynamicWander dw = new DynamicWander(wanderOffset, wanderRadius, wanderRate, maxAcceleration, wanderOrientation, ds);
         SteeringOutput so = dw.getSteering();
         agent.DrawCircle(dw.targetPos, wanderRadius);
         //agent.DrawLine(agent.k.position, asVector(wanderOrientation));
@@ -267,16 +268,15 @@ public class SteeringBehavior : MonoBehaviour
 
     public SteeringOutput ObstacleWander()
     {
-        if (startTime > wanderRate)
-        {
-            wanderOrientation += randomBinomial() * wanderRate;
-            startTime = 0f;
-        }
+        //if (startTime > wanderRate)
+        //{
+        //    wanderOrientation += randomBinomial() * wanderRate;
+        //    startTime = 0f;
+        //}
         startTime += Time.deltaTime;
-        DynamicAlign a = new DynamicAlign(agent.k, new Kinematic(), maxAngularAcceleration, maxRotation, targetRadiusA, slowRadiusA);
-        DynamicFace f = new DynamicFace(new Kinematic(), a);
-        DynamicWander dw = new DynamicWander(wanderOffset, wanderRadius, wanderRate, maxAcceleration, wanderOrientation, f);
-
+        DynamicSeek ds = new DynamicSeek(agent.k, new Kinematic(), maxAcceleration);
+        DynamicWander dw = new DynamicWander(wanderOffset, wanderRadius, wanderRate, maxAcceleration, 100f, ds);
+        agent.DrawCircle(dw.targetPos, wanderRadius);
         return ObstacleAvoidance(dw);
     }
 
