@@ -602,7 +602,7 @@ class DynamicObstacleAvoidance: SteeringBehaviour
         // Does the ray intersect any objects excluding the player layer
         collisionDetector = new RaycastHit();
         float angleInc = 10f;
-        Debug.DrawRay(s.getCharacter().position, s.getCharacter().velocity, Color.green);
+        //Debug.DrawRay(s.getCharacter().position, s.getCharacter().velocity, Color.green);
         for (int i = 0; i < 6; i++) {
             Vector3 rotRayVec;
             if (i%2 == 0) {
@@ -614,12 +614,12 @@ class DynamicObstacleAvoidance: SteeringBehaviour
 
 
             rotRayVec.Scale(new Vector3(1f, 0f, 1f));
-            Debug.DrawRay(s.getCharacter().position, rotRayVec, Color.cyan);
+            //Debug.DrawRay(s.getCharacter().position, rotRayVec, Color.cyan);
             if (Physics.Raycast(s.getCharacter().position, rotRayVec, out collisionDetector, lookahead))
             {
 
 
-                Debug.DrawRay(collisionDetector.point, collisionDetector.normal * avoidDistance, Color.red);
+                //Debug.DrawRay(collisionDetector.point, collisionDetector.normal * avoidDistance, Color.red);
                 s.setTargetPosition(collisionDetector.point + (collisionDetector.normal * avoidDistance));
                 targetPos = s.getTarget().position;
                 DynamicSeek seekAvoidPoint = new DynamicSeek(s.getCharacter(), s.getTarget(), maxAcceleration);

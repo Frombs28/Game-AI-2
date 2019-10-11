@@ -32,6 +32,7 @@ public class NPCController : MonoBehaviour
     LineRenderer line;              // Used to draw circles and other things
 
     bool stopped;
+    public bool hit = false;
 
 
     public Kinematic k;
@@ -43,6 +44,7 @@ public class NPCController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         line = GetComponent<LineRenderer>();
         stopped = false;
+        msm = FindObjectOfType<MapStateManager>();
 
 
         //intialize steering output
@@ -290,14 +292,22 @@ public class NPCController : MonoBehaviour
 
     public void CaughtTarget()
     {
-        if(target.gameObject.tag == "House")
+        Debug.Log("Hit!" + target.gameObject.tag);
+        if (target.gameObject.tag == "House")
         {
             msm.ReachedHouse();
+            Invoke("SetFalse", 1.0f);
         }
         else
         {
             msm.CaughtCharacter();
         }
+        hit = true;
+    }
+
+    void SetFalse()
+    {
+        gameObject.SetActive(false);
     }
 
     /// <summary>

@@ -58,6 +58,7 @@ public class MapStateManager : MonoBehaviour {
     // spawnedNPCs list. You can always add/remove NPCs later on.
 
     void Start() {
+        Camera.main.GetComponent<CameraController>().player = spawns[0];
         StartCoroutine("NextPhase", 0.02f);
         spawnedNPCs = new List<GameObject>();
     }
@@ -74,7 +75,7 @@ public class MapStateManager : MonoBehaviour {
         string inputstring = Input.inputString;
         if (inputstring.Length > 0)
         {
-            Debug.Log(inputstring);
+            //Debug.Log(inputstring);
 
             // Look for a number key click
             if (inputstring.Length > 0)
@@ -194,7 +195,7 @@ public class MapStateManager : MonoBehaviour {
     }
 
     // Used for switching scene when Hunter and Wolf see each other
-    public void StartPhaseThree()
+    public void Sight()
     {
         if (currentPhase == 2)
         {
@@ -206,11 +207,11 @@ public class MapStateManager : MonoBehaviour {
     {
         if(currentPhase == 3)
         {
-            StartCoroutine("NextPhase", 0.02f);
+            StartCoroutine("NextPhase", 1.0f);
         }
         if(currentPhase == 5)
         {
-            StartCoroutine("NextHalfPhase", 0.02f);
+            StartCoroutine("NextHalfPhase", 1.0f);
         }
     }
 
@@ -221,13 +222,13 @@ public class MapStateManager : MonoBehaviour {
             numAtHouse++;
             if (numAtHouse == 2)
             {
-                StartCoroutine("NextPhase", 0.02f);
+                StartCoroutine("NextPhase", 1.2f);
                 return;
             }
         }
         if(currentPhase == 8)
         {
-            StartCoroutine("NextPhase", 0.02f);
+            StartCoroutine("NextPhase", 1.2f);
         }
     }
 
@@ -351,7 +352,6 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs.Add(SpawnItem(spawns[11], HunterPrefab, house, SpawnText1, 0));
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 3;
         spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
-        StartCoroutine("NextPhase", 10.0f);
     }
 
     // Scene 9: Triggered when Hunter arrives to house. Nothing happens but the twist ending.

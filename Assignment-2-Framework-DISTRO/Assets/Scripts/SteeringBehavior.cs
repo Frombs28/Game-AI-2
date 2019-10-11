@@ -82,7 +82,10 @@ public class SteeringBehavior : MonoBehaviour
         DynamicArrive da = new DynamicArrive(agent.k, target.k, maxAcceleration, maxSpeed, targetRadiusL, slowRadiusL);
         agent.DrawCircle(target.k.position, slowRadiusL);
         SteeringOutput so = da.getSteering();
-        agent.CaughtTarget();
+        if (!agent.hit)
+        {
+            agent.CaughtTarget();
+        }
         return so;
     }
 
@@ -161,6 +164,12 @@ public class SteeringBehavior : MonoBehaviour
     public SteeringOutput ObstacleAvoidance(SteeringBehaviour behaviourWhenNotAvoiding)
     {
         Kinematic currentTarget = target.k;
+
+        float dis = (agent.k.position - currentTarget.position).magnitude;
+        if (dis <= slowRadiusL)
+        {
+            return Arrive();
+        }
         stationaryTimeIncrimented = false;
 
         //trigger, sets unstuck position
@@ -175,7 +184,7 @@ public class SteeringBehavior : MonoBehaviour
         if (seekingUnstuckPoint)
         {
             currentTarget = unstuckTarget;
-            if ((agent.k.position - unstuckTarget.position).magnitude <= slowRadiusL) {
+            if ((agent.k.position - unstuckTarget.position).magnitude < slowRadiusL) {
                 seekingUnstuckPoint = false;
             }
             s = new DynamicSeek(agent.k, currentTarget, maxAcceleration);
@@ -186,11 +195,7 @@ public class SteeringBehavior : MonoBehaviour
         DynamicPursue pa = new DynamicPursue(agent.k, currentTarget, maxAcceleration, maxPrediction);
 
 
-        float dis = (agent.k.position - currentTarget.position).magnitude;
-        if (dis <= slowRadiusL)
-        {
-            return Arrive();
-        }
+        
         //DynamicPursue dp = new DynamicPursue(agent.k, target.k, maxAcceleration, maxPrediction);
         deltaPos = lastFramePos - agent.k.position;
         //check if x is stagnant
@@ -221,7 +226,7 @@ public class SteeringBehavior : MonoBehaviour
             //stationaryTime = 0;
         }
 
-        Debug.Log(stationaryTime);
+        //Debug.Log(stationaryTime);
 
 
         DynamicObstacleAvoidance doa = new DynamicObstacleAvoidance(3f, 2f, s, maxAcceleration);
