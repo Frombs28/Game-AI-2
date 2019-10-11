@@ -335,6 +335,7 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs[1].GetComponent<NPCController>().NewTarget(house);
         spawnedNPCs[1].GetComponent<NPCController>().mapState = 3;
         spawnedNPCs[1].GetComponent<NPCController>().label.enabled = true;
+        Camera.main.GetComponent<CameraController>().player = spawnedNPCs[0];
     }
 
     // Scene 7: Triggered by BOTH characters reaching their destination - both characters dissapear when they arrive.

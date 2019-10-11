@@ -197,7 +197,7 @@ public class SteeringBehavior : MonoBehaviour
         stationaryTimeIncrimented = false;
 
         //trigger, sets unstuck position
-        if (stationaryTime > 2f) {
+        if (stationaryTime > 5f) {
             seekingUnstuckPoint = true;
             stationaryTime = 0f;
             //unstuckTarget.position = agent.k.position - (Quaternion.Euler(0f, Random.Range(0,360f), 0f) * Vector3.forward)*15f;

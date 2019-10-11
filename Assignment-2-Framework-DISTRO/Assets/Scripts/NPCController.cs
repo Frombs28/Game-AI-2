@@ -233,6 +233,7 @@ public class NPCController : MonoBehaviour
         }
         if (stopped)
         {
+            rb.velocity = Vector3.zero;
             k.position = rb.position;
             return;
         }
