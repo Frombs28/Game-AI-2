@@ -283,11 +283,10 @@ public class MapStateManager : MonoBehaviour {
     {
         narrator.text = "After the Hunter catches up to the Wolf and scares it off, Little Red Riding Hood appears, "+
                         "happily following the road to her Grandmother's house.";
-        //spawnedNPCs.Add(SpawnItem(spawns[5], RedPrefab, null, SpawnText3, 0));
-        //spawnedNPCs[0].GetComponent<NPCController>().NewTarget(house);
-        //spawnedNPCs[0].GetComponent<NPCController>().mapState = 9;
-        //spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
-        //CreatePath();
+        spawnedNPCs.Add(SpawnItem(spawns[5], RedPrefab, null, SpawnText3, 0));
+        spawnedNPCs[0].GetComponent<NPCController>().mapState = 9;
+        spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
+        CreatePath();
         StartCoroutine("NextPhase", 15.0f);
     }
 
@@ -296,11 +295,11 @@ public class MapStateManager : MonoBehaviour {
     private void EnterMapStateFive()
     {
         narrator.text = "The Wolf spots Red, and runs toward her to intercept her and figure out where she is going.";
-        //spawnedNPCs.Add(SpawnItem(spawns[6], RedPrefab, null, SpawnText3, 0));
-        //spawnedNPCs[0].GetComponent<NPCController>().NewTarget(house);
-        //spawnedNPCs[0].GetComponent<NPCController>().mapState = 8;
-        //spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
-        //CreatePath();
+        spawnedNPCs.Add(SpawnItem(spawns[6], RedPrefab, null, SpawnText3, 0));
+        spawnedNPCs[0].GetComponent<NPCController>().mapState = 9;
+        spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
+        spawnedNPCs[0].GetComponent<SteeringBehavior>().current = 4;
+        CreatePath();
         spawnedNPCs.Add(SpawnItem(spawns[7], WolfPrefab, null, SpawnText2, 0));
         spawnedNPCs[1].GetComponent<NPCController>().NewTarget(spawnedNPCs[0].GetComponent<NPCController>());
         spawnedNPCs[1].GetComponent<NPCController>().mapState = 3;
@@ -321,11 +320,11 @@ public class MapStateManager : MonoBehaviour {
     {
         narrator.text = "The Wolf takes off towards Grandmother's house, using his " +
                         "knowledge of the forest to get the House before her.";
-        //spawnedNPCs.Add(SpawnItem(spawns[8], RedPrefab, null, SpawnText3, 0));
-        //spawnedNPCs[0].GetComponent<NPCController>().NewTarget(house);
-        //spawnedNPCs[0].GetComponent<NPCController>().mapState = 8;
-        //spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
-        //CreatePath();
+        spawnedNPCs.Add(SpawnItem(spawns[8], RedPrefab, null, SpawnText3, 0));
+        spawnedNPCs[0].GetComponent<NPCController>().mapState = 9;
+        spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
+        spawnedNPCs[0].GetComponent<SteeringBehavior>().current = 4;
+        CreatePath();
         spawnedNPCs.Add(SpawnItem(spawns[9], WolfPrefab, null, SpawnText2, 0));
         spawnedNPCs[1].GetComponent<NPCController>().NewTarget(house);
         spawnedNPCs[1].GetComponent<NPCController>().mapState = 3;

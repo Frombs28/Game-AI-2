@@ -173,7 +173,17 @@ public class NPCController : MonoBehaviour
                 linear = ai.CollisionAvoidance().linear;
                 angular = ai.Face().angular;
                 break;
-
+            case 9:
+                if (label)
+                {
+                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Path Follow";
+                }
+                stopped = false;
+                //rotation = ai.Face(rotation, linear);
+                ai.SetTarget(target);
+                linear = ai.PathFollow().linear;
+                angular = ai.Face().angular;
+                break;
             case 10:
                 break;
                 

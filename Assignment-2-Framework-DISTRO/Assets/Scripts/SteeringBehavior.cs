@@ -44,8 +44,11 @@ public class SteeringBehavior : MonoBehaviour
     public float startTime;
 
     // Holds the path to follow
-    public GameObject[] Path;
+    public List<GameObject> Path;
+    GameObject pathsManager;
     public int current = 0;
+    bool pathFollow = false;
+    bool change = false;
 
     [SerializeField]
     public List<NPCController> targets;
@@ -53,6 +56,11 @@ public class SteeringBehavior : MonoBehaviour
     protected void Start()
     {
         agent = GetComponent<NPCController>();
+        pathsManager = GameObject.FindGameObjectWithTag("Paths");
+        foreach(Transform child in pathsManager.transform)
+        {
+            Path.Add(child.gameObject);
+        }
     }
 
     public void SetTarget(NPCController newTarget)
@@ -82,20 +90,36 @@ public class SteeringBehavior : MonoBehaviour
         DynamicArrive da = new DynamicArrive(agent.k, target.k, maxAcceleration, maxSpeed, targetRadiusL, slowRadiusL);
         agent.DrawCircle(target.k.position, slowRadiusL);
         SteeringOutput so = da.getSteering();
-        if (!agent.hit)
+        if (pathFollow && !change && current < 5)
+        {
+            current++;
+            change = true;
+        }
+        else if (!agent.hit)
         {
             agent.CaughtTarget();
         }
         return so;
     }
 
+    public SteeringOutput PathFollow()
+    {
+        pathFollow = true;
+        change = false;
+        SetTarget(Path[current].GetComponent<NPCController>());
+        DynamicSeek sb = new DynamicSeek(agent.k, target.k, maxAcceleration);
+        return ObstacleAvoidance(sb);
+    }
+
     public SteeringOutput PursueArrive() {
+        
         float dis = (agent.k.position - target.k.position).magnitude;
         if(dis <= slowRadiusL) {
             return Arrive();
         }
         DynamicPursue dp = new DynamicPursue(agent.k, target.k, maxAcceleration, maxPrediction);
-        agent.DrawCircle(dp.predictPos, targetRadiusL);
+        //agent.DrawCircle(dp.predictPos, targetRadiusL);
+        agent.DrawLine(agent.transform.position, dp.predictPos);
         return dp.getSteering();
     }
     /*
@@ -269,6 +293,15 @@ public class SteeringBehavior : MonoBehaviour
         return ObstacleAvoidance(sb);
     }
 
+    /*
+    public SteeringOutput ObstaclePursue()
+    {
+        DynamicPursue sb = new DynamicPursue(agent.k, target.k, maxAcceleration, maxPrediction);
+        agent.DrawLine(agent.transform.position, sb.predictPos);
+        return ObstacleAvoidance(sb);
+    }
+    */
+    
     public SteeringOutput ObstacleWander()
     {
         if (startTime > wanderRate)

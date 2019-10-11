@@ -9,6 +9,7 @@ TagManager:
   - Red
   - Spawner
   - House
+  - Paths
   layers:
   - Default
   - TransparentFX

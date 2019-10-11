@@ -71,6 +71,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -132,6 +133,7 @@ MonoBehaviour:
   maxSpeed: 3
   mapState: 0
   label: {fileID: 0}
+  hit: 0
 --- !u!114 &114514449303210042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,14 +162,9 @@ MonoBehaviour:
   wanderRadius: 2
   wanderRate: 1
   startTime: 0
-  Path:
-  - {fileID: 1521808320783650, guid: 542da097d7789844fbc8cd10769eb879, type: 3}
-  - {fileID: 1300367382764716, guid: 542da097d7789844fbc8cd10769eb879, type: 3}
-  - {fileID: 1220598293937184, guid: 542da097d7789844fbc8cd10769eb879, type: 3}
-  - {fileID: 1955218538869046, guid: 542da097d7789844fbc8cd10769eb879, type: 3}
-  - {fileID: 1358002575393872, guid: 542da097d7789844fbc8cd10769eb879, type: 3}
-  - {fileID: 1132808542824362, guid: 542da097d7789844fbc8cd10769eb879, type: 3}
+  Path: []
   current: 0
+  targets: []
 --- !u!120 &120923665468088886
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -193,6 +190,7 @@ LineRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -329,6 +327,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
