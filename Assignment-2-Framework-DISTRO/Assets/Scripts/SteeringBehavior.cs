@@ -143,7 +143,7 @@ public class SteeringBehavior : MonoBehaviour
         return new Vector3(Mathf.Sin(_orientation), 0f, Mathf.Cos(_orientation));
     }
 
-    /*
+    
     public SteeringOutput Wander()
     {
         if(startTime > wanderRate) {
@@ -163,7 +163,7 @@ public class SteeringBehavior : MonoBehaviour
 
 
     }
-    */
+    
 
     public SteeringOutput Face()
     {
@@ -332,7 +332,7 @@ public class SteeringBehavior : MonoBehaviour
         return so;
     }
 
-    
+    /*
     public SteeringOutput PathFollowing() {
         Path p = new Path(path);
         Transform currentNode = path[current].transform;
@@ -341,6 +341,7 @@ public class SteeringBehavior : MonoBehaviour
         pf.path.getClosestPointOnPath(path[current].transform, path[current + 1].transform, agent.k.position);
         return new SteeringOutput();
     }
+    */
 
 
 
