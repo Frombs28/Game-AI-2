@@ -24,7 +24,7 @@ public class TriggerSight : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "Wolf" && !found)
+        if(other.gameObject.tag == "Wolf" && !found && msm.CurState() == 2)
         {
             msm.Sight();
             found = true;

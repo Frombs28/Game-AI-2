@@ -207,13 +207,14 @@ public class MapStateManager : MonoBehaviour {
     {
         if(currentPhase == 3)
         {
-            StartCoroutine("NextPhase", 1.0f);
+            StartCoroutine("NextPhase", 2.0f);
         }
         if(currentPhase == 5)
         {
-            StartCoroutine("NextHalfPhase", 1.0f);
+            StartCoroutine("NextHalfPhase", 0.2f);
         }
     }
+
 
     public void ReachedHouse()
     {
@@ -230,6 +231,11 @@ public class MapStateManager : MonoBehaviour {
         {
             StartCoroutine("NextPhase", 1.2f);
         }
+    }
+
+    public int CurState()
+    {
+        return currentPhase;
     }
 
     // $ NEED MORE SPAWNERS FOR BETTER SCENE CONTROL
@@ -295,7 +301,7 @@ public class MapStateManager : MonoBehaviour {
     private void EnterMapStateFive()
     {
         narrator.text = "The Wolf spots Red, and runs toward her to intercept her and figure out where she is going.";
-        spawnedNPCs.Add(SpawnItem(spawns[6], RedPrefab, null, SpawnText3, 0));
+        spawnedNPCs.Add(SpawnItem(spawns[6], RedPrefab, house, SpawnText3, 0));
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 9;
         spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
         spawnedNPCs[0].GetComponent<SteeringBehavior>().current = 4;
@@ -320,7 +326,7 @@ public class MapStateManager : MonoBehaviour {
     {
         narrator.text = "The Wolf takes off towards Grandmother's house, using his " +
                         "knowledge of the forest to get the House before her.";
-        spawnedNPCs.Add(SpawnItem(spawns[8], RedPrefab, null, SpawnText3, 0));
+        spawnedNPCs.Add(SpawnItem(spawns[8], RedPrefab, house, SpawnText3, 0));
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 9;
         spawnedNPCs[0].GetComponent<NPCController>().label.enabled = true;
         spawnedNPCs[0].GetComponent<SteeringBehavior>().current = 4;
@@ -329,7 +335,6 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs[1].GetComponent<NPCController>().NewTarget(house);
         spawnedNPCs[1].GetComponent<NPCController>().mapState = 3;
         spawnedNPCs[1].GetComponent<NPCController>().label.enabled = true;
-        StartCoroutine("NextPhase", 30.0f);
     }
 
     // Scene 7: Triggered by BOTH characters reaching their destination - both characters dissapear when they arrive.

@@ -78,6 +78,7 @@ public class NPCController : MonoBehaviour
                 {
                     label.text = name.Replace("(Clone)", "") + "\nAt Rest";
                 }
+                stopped = true;
                 linear = Vector3.zero;
                 angular = 0;
                 break;
@@ -230,6 +231,11 @@ public class NPCController : MonoBehaviour
         {
             return;
         }
+        if (stopped)
+        {
+            k.position = rb.position;
+            return;
+        }
         so.linear = _linear;
         so.angular = _angular;
         k.position = rb.position;
@@ -308,7 +314,11 @@ public class NPCController : MonoBehaviour
             msm.ReachedHouse();
             Invoke("SetFalse", 1.0f);
         }
-        else
+        else if(target.gameObject.tag == "Wolf")
+        {
+            msm.CaughtCharacter();
+        }
+        else if(target.gameObject.tag == "Red")
         {
             msm.CaughtCharacter();
         }
@@ -317,6 +327,7 @@ public class NPCController : MonoBehaviour
 
     void SetFalse()
     {
+        label.enabled = false;
         gameObject.SetActive(false);
     }
 
