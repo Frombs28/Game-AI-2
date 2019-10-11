@@ -24,6 +24,11 @@ public class MapStateManager : MonoBehaviour {
     public GameObject RedPrefab;        // Red Riding Hood, or just "team red"
     public GameObject BluePrefab;       // "team blue"
 
+    public GameObject EmptySpawner;
+
+    GameObject hunterPos;
+    GameObject wolfPos;
+
     public NPCController house;         // for future use
 
     public NPCController player;
@@ -87,6 +92,10 @@ public class MapStateManager : MonoBehaviour {
                         previousPhase = currentPhase;
                         currentPhase = num;
                         StopAllCoroutines();
+                        hunterPos = Instantiate(EmptySpawner, spawns[3].transform);
+                        hunterPos.transform.position = new Vector3(hunterPos.transform.position.x, 1, hunterPos.transform.position.z);
+                        wolfPos = Instantiate(EmptySpawner, spawns[4].transform);
+                        wolfPos.transform.position = new Vector3(wolfPos.transform.position.x, 1, wolfPos.transform.position.z);
                         for (int i = spawnedNPCs.Count - 1; i >= 0; i--)
                         {
                             GameObject character = spawnedNPCs[i];
@@ -199,6 +208,10 @@ public class MapStateManager : MonoBehaviour {
     {
         if (currentPhase == 2)
         {
+            hunterPos = Instantiate(EmptySpawner, spawnedNPCs[0].transform);
+            wolfPos = Instantiate(EmptySpawner, spawnedNPCs[1].transform);
+            hunterPos.transform.position = new Vector3(hunterPos.transform.position.x, 1, hunterPos.transform.position.z);
+            wolfPos.transform.position = new Vector3(wolfPos.transform.position.x, 1, wolfPos.transform.position.z);
             StartCoroutine("NextPhase",0.02f);
         }
     }
@@ -276,8 +289,8 @@ public class MapStateManager : MonoBehaviour {
     private void EnterMapStateThree() {
         narrator.text = "The Hunter spots the Wolf walking through the woods, and "+
                         "begins pursuing it, intent on hunting the Wolf so it cannot hurt anyone.";
-        spawnedNPCs.Add(SpawnItem(spawns[3], HunterPrefab, null, SpawnText1, 0));
-        spawnedNPCs.Add(SpawnItem(spawns[4], WolfPrefab, null, SpawnText2, 0));
+        spawnedNPCs.Add(SpawnItem(hunterPos, HunterPrefab, null, SpawnText1, 0));
+        spawnedNPCs.Add(SpawnItem(wolfPos, WolfPrefab, null, SpawnText2, 0));
         spawnedNPCs[0].GetComponent<NPCController>().NewTarget(spawnedNPCs[1].GetComponent<NPCController>());
         spawnedNPCs[1].GetComponent<NPCController>().NewTarget(spawnedNPCs[0].GetComponent<NPCController>());
         spawnedNPCs[0].GetComponent<NPCController>().mapState = 3;

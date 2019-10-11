@@ -323,7 +323,7 @@ public class NPCController : MonoBehaviour
     public void CaughtTarget()
     {
         Debug.Log("Hit!" + target.gameObject.tag);
-        if (target.gameObject.tag == "House")
+        if (target.gameObject.tag == "House" && mapState!=7)
         {
             msm.ReachedHouse();
             Invoke("SetFalse", 1.0f);

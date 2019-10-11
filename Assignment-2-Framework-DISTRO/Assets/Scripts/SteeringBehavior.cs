@@ -42,6 +42,7 @@ public class SteeringBehavior : MonoBehaviour
     public float wanderRate;
     private float wanderOrientation;
     public float startTime;
+    Vector3 targetPos;
 
     // Holds the path to follow
     public List<GameObject> Path;
@@ -195,7 +196,7 @@ public class SteeringBehavior : MonoBehaviour
         Kinematic currentTarget = target.k;
 
         float dis = (agent.k.position - currentTarget.position).magnitude;
-        if (dis <= slowRadiusL)
+        if (dis <= slowRadiusL && agent.mapState != 7)
         {
             return Arrive();
         }
@@ -263,8 +264,14 @@ public class SteeringBehavior : MonoBehaviour
         //}
         DynamicObstacleAvoidance doa = new DynamicObstacleAvoidance(3f, 2f, s, maxAcceleration);
         SteeringOutput so = doa.getSteering();
-        agent.DrawLine(agent.k.position,doa.targetPos);
-
+        if(agent.mapState == 7)
+        {
+            agent.DrawCircle(targetPos, wanderRadius);
+        }
+        else
+        {
+            agent.DrawLine(agent.k.position, doa.targetPos);
+        }
         lastFramePos = agent.k.position;
         return so;
     }
@@ -320,7 +327,8 @@ public class SteeringBehavior : MonoBehaviour
         startTime += Time.deltaTime;
         DynamicSeek ds = new DynamicSeek(agent.k, new Kinematic(), maxAcceleration);
         DynamicWander dw = new DynamicWander(wanderOffset, wanderRadius, wanderRate, maxAcceleration, 100f, ds);
-        agent.DrawCircle(dw.targetPos, wanderRadius);
+        targetPos = dw.targetPos;
+        //agent.DrawCircle(dw.targetPos, wanderRadius);
         return ObstacleAvoidance(dw);
     }
 
